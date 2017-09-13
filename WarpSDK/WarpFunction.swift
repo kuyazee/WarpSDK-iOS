@@ -17,7 +17,7 @@ open class WarpFunction {
             fatalError("WarpServer is not yet initialized")
         }
         
-        let _ = WarpAPI.post(warp.generateEndpoint(.functions(endpoint: functionName)), parameters: parameters, headers: warp.HEADER()).warpResponse { (warpResult) in
+        let _ = Warp.API.post(warp.generateEndpoint(.functions(endpoint: functionName)), parameters: parameters, headers: warp.HEADER()).warpResponse { (warpResult) in
             switch warpResult {
             case .success(let JSON):
                 let warpResponse = WarpResponse(json: JSON, result: Any.self)

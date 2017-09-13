@@ -22,7 +22,7 @@ public extension WarpUserQuery {
         guard let warp = Warp.shared else {
             fatalError("WarpServer is not yet initialized")
         }
-        let _ = WarpAPI.get(warp.generateEndpoint(.users(id: objectId)), parameters: queryBuilder.query(queryConstraints).param, headers: warp.HEADER()).warpResponse { (warpResult) in
+        let _ = Warp.API.get(warp.generateEndpoint(.users(id: objectId)), parameters: queryBuilder.query(queryConstraints).param, headers: warp.HEADER()).warpResponse { (warpResult) in
             switch warpResult {
             case .success(let JSON):
                 let warpResponse = WarpResponse(json: JSON, result: [String: Any].self)
@@ -46,7 +46,7 @@ public extension WarpUserQuery {
         guard let warp = Warp.shared else {
             fatalError("WarpServer is not yet initialized")
         }
-        let _ = WarpAPI.get(warp.generateEndpoint(.users(id: nil)), parameters: queryBuilder.query(queryConstraints).param, headers: warp.HEADER()).warpResponse { (warpResult) in
+        let _ = Warp.API.get(warp.generateEndpoint(.users(id: nil)), parameters: queryBuilder.query(queryConstraints).param, headers: warp.HEADER()).warpResponse { (warpResult) in
             switch warpResult {
             case .success(let JSON):
                 let warpResponse = WarpResponse(json: JSON, result: Array<Dictionary<String,Any>>.self)

@@ -115,7 +115,7 @@ public class WarpObject: WarpObjectProtocol {
             fatalError("WarpServer is not yet initialized")
         }
         if objectId > 0 {
-            let _ = WarpAPI.delete(warp.generateEndpoint(.classes(className: className, id: objectId)), parameters: param, headers: warp.HEADER()).warpResponse { (warpResult) in
+            let _ = Warp.API.delete(warp.generateEndpoint(.classes(className: className, id: objectId)), parameters: param, headers: warp.HEADER()).warpResponse { (warpResult) in
                 switch warpResult {
                 case .success(let JSON):
                     let warpResponse = WarpResponse(json: JSON, result: [String: Any].self)
@@ -147,7 +147,7 @@ public class WarpObject: WarpObjectProtocol {
             fatalError("WarpServer is not yet initialized")
         }
         if objectId > 0 {
-            let _ = WarpAPI.put(warp.generateEndpoint(.classes(className: className, id: objectId)), parameters: param, headers: warp.HEADER()).warpResponse { (warpResult) in
+            let _ = Warp.API.put(warp.generateEndpoint(.classes(className: className, id: objectId)), parameters: param, headers: warp.HEADER()).warpResponse { (warpResult) in
                 switch warpResult {
                 case .success(let JSON):
                     let warpResponse = WarpResponse(json: JSON, result: [String: Any].self)
@@ -164,7 +164,7 @@ public class WarpObject: WarpObjectProtocol {
                 }
             }
         } else {
-            let _ = WarpAPI.post(warp.generateEndpoint(.classes(className: className, id: nil)), parameters: param, headers: warp.HEADER()).warpResponse { (warpResult) in
+            let _ = Warp.API.post(warp.generateEndpoint(.classes(className: className, id: nil)), parameters: param, headers: warp.HEADER()).warpResponse { (warpResult) in
                 switch warpResult {
                 case .success(let JSON):
                     let warpResponse = WarpResponse(json: JSON, result: [String: Any].self)

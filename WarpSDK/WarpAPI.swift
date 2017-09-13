@@ -1,5 +1,5 @@
 //
-//  WarpAPI.swift
+//  Warp.API.swift
 //  SwipeRX
 //
 //  Created by Zonily Jame Pesquera on 06/10/2016.
@@ -7,12 +7,15 @@
 //
 
 import Alamofire
+import PromiseKit
 
-open class WarpAPI {
-    var shared: WarpAPI = WarpAPI()
+public extension Warp {
+    public class API {
+        let shared: Warp.API = Warp.API()
+    }
 }
 
-public extension WarpAPI {
+public extension Warp.API {
     public static func get(_ URLString: URLConvertible, parameters: [String : Any]?, headers: [String : String]) -> WarpDataRequest {
         return Alamofire.request(URLString, method: .get, parameters: parameters, encoding: URLEncoding.default, headers: headers)
     }
