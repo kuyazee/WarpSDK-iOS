@@ -211,11 +211,12 @@ extension WarpUser {
     
     public static func current() -> WarpUser? {
         let user: WarpUser = WarpUser()
+        let keys: [String] = UserDefaults.standard.array(forKey: "swrxCurrentUserKeys_rbBEAFVAWFBVWW") as? [String] ?? []
         
-        let keys: [String] = UserDefaults.standard.array(forKey: "swrxCurrentUserKeys_rbBEAFVAWFBVWW") as! [String]
         if keys.count == 0 {
             return nil
         }
+        
         for key in keys {
             _ = user.set(object: UserDefaults.standard.object(forKey: "swrxCurrentUser\(key)_9gehrpnvr2pv3r")! as Any, forKey: key)
         }
@@ -224,7 +225,7 @@ extension WarpUser {
     
     public static func deleteCurrent() {
         UserDefaults.standard.set([], forKey: "swrxCurrentUserKeys_rbBEAFVAWFBVWW")
-        let keys: [String] = UserDefaults.standard.array(forKey: "swrxCurrentUserKeys_rbBEAFVAWFBVWW") as! [String]
+        let keys: [String] = UserDefaults.standard.array(forKey: "swrxCurrentUserKeys_rbBEAFVAWFBVWW") as? [String] ?? []
         for key in keys {
             UserDefaults.standard.set("", forKey: "swrxCurrentUser\(key)_9gehrpnvr2pv3r")
         }
