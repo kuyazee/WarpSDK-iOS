@@ -64,19 +64,19 @@ public enum WarpResponseCode: Int {
     
     public static var allErrors: [WarpResponseCode] {
         return [
-            missingConfiguration,
-            internalServerError,
-            queryError,
-            invalidCredentials,
-            invalidSessionToken,
-            invalidObjectKey,
-            invalidPointer,
-            forbiddenOperation,
-            usernameTaken,
-            emailTaken,
-            invalidAPIKey,
-            modelNotFound,
-            functionNotFound
+            self.missingConfiguration,
+            self.internalServerError,
+            self.queryError,
+            self.invalidCredentials,
+            self.invalidSessionToken,
+            self.invalidObjectKey,
+            self.invalidPointer,
+            self.forbiddenOperation,
+            self.usernameTaken,
+            self.emailTaken,
+            self.invalidAPIKey,
+            self.modelNotFound,
+            self.functionNotFound
         ]
     }
     
