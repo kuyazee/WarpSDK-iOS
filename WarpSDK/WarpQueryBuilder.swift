@@ -200,17 +200,41 @@ public struct WarpQueryConstraint {
 }
 
 public enum WarpConstraint: String {
+    /// eq: equal to
     case EqualTo = "eq"
+    
+    /// neq: not equal to
     case NotEqualTo = "neq"
+    
+    /// gt: greater than
     case GreaterThan = "gt"
+    
+    /// gte: greater than or equal to
     case GreaterThanOrEqualTo = "gte"
+    
+    /// lt: less than
     case LessThan = "lt"
+    
+    /// lte: less than or equal to
     case LessThanOrEqualTo = "lte"
+    
+    /// ex: is not null/is null (value is either true or false)
     case Exists = "ex"
+    
+    /// in: contained in array
     case ContainedInArray = "in"
+    
+    /// nin: not contained in array
     case NotContainedInArray = "nin"
+    
+    
+    /// str: starts with the specified string
     case StartsWithString = "str"
+    
+    /// end: ends with the specified string
     case EndsWithString = "end"
+    
+    /// has: contains the specified string (to search multiple keys, separate the key names with |)
     case ContainsString = "has"
 }
 
