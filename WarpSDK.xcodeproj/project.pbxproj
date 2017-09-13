@@ -57,9 +57,9 @@
 		A655FC801DD19DAD003F00E1 /* WarpSDK.podspec */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = WarpSDK.podspec; sourceTree = "<group>"; };
 		A655FC8A1DD19E49003F00E1 /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
 		A655FC8B1DD19E49003F00E1 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
-		A655FC8E1DD19E66003F00E1 /* Warp.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Warp.swift; sourceTree = "<group>"; };
+		A655FC8E1DD19E66003F00E1 /* Warp.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = Warp.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		A655FC8F1DD19E66003F00E1 /* WarpAPI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WarpAPI.swift; sourceTree = "<group>"; };
-		A655FC901DD19E66003F00E1 /* WarpObject.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WarpObject.swift; sourceTree = "<group>"; };
+		A655FC901DD19E66003F00E1 /* WarpObject.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = WarpObject.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		A655FC911DD19E66003F00E1 /* WarpFunction.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WarpFunction.swift; sourceTree = "<group>"; };
 		A655FC921DD19E66003F00E1 /* WarpUser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WarpUser.swift; sourceTree = "<group>"; };
 		A655FC931DD19E66003F00E1 /* WarpResponse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WarpResponse.swift; sourceTree = "<group>"; };
@@ -103,6 +103,7 @@
 		A655FC581DD19D2E003F00E1 = {
 			isa = PBXGroup;
 			children = (
+				A687F99B1F68D53F00C695B0 /* SDKTestFiles */,
 				A655FC801DD19DAD003F00E1 /* WarpSDK.podspec */,
 				A655FC8A1DD19E49003F00E1 /* LICENSE */,
 				A655FC8B1DD19E49003F00E1 /* README.md */,
@@ -164,6 +165,13 @@
 				3C3B194048087A1FD857354E /* Pods_WarpSDKTests.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		A687F99B1F68D53F00C695B0 /* SDKTestFiles */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = SDKTestFiles;
 			sourceTree = "<group>";
 		};
 		E22A2E976019C288C5A5DCA0 /* Pods */ = {
