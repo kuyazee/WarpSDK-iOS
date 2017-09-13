@@ -53,7 +53,7 @@ import WarpSDK
 
 // Initialize Warp Inside AppDelegate 
 func applicationDidFinishLaunching(application: UIApplication) {
-Warp.Initialize("http://my-warp-server.com/api/1/", apiKey: "12345678abcdefg")
+    Warp.Initialize("http://my-warp-server.com/api/1/", apiKey: "12345678abcdefg")
 }
 ```
 
@@ -94,12 +94,12 @@ alien.save()
 // or 
 
 alien.save { (success, error) in
-if error != nil {
-print(error)
-} else {
-print("The alien has been created with the following ID:", alien.objectId)
-print("The alien has been named:", alien.get(object: "name"))
-}
+    if error != nil {
+        print(error)
+    } else {
+        print("The alien has been created with the following ID:", alien.objectId)
+        print("The alien has been named:", alien.get(object: "name"))
+    }
 }
 ```
 
@@ -112,7 +112,7 @@ To retrieve an Object for a specific model, you can use `Warp Queries`. For more
 let alienQuery = WarpQuery(className: "alien")
 alienQuery.equalTo(16, forKey: "id")
 alienQuery.first { (warpObject, error) in
-// You now have a copy of alien (id: 16) from the database        
+    // You now have a copy of alien (id: 16) from the database        
 }
 ```
 
@@ -147,15 +147,15 @@ alien.set(object: "Madam Vestra", forKey: "name")
 alien.set(object: 4, forKey: "type")
 
 alien.save { (success, error) in
-// If this is the 200th alien, change its type, for example
-if alien.objectId > 200 {
-alien.set(object: 5, forKey: "type")
-}
+    // If this is the 200th alien, change its type, for example
+    if alien.objectId > 200 {
+        alien.set(object: 5, forKey: "type")
+    }
 
-// Update the alien
-alien.save { (success, error) in
-// The alien has been successfully updated
-}
+    // Update the alien
+    alien.save { (success, error) in
+        // The alien has been successfully updated
+    }
 }
 ```
 
@@ -166,11 +166,11 @@ let alienQuery = WarpQuery(className: "alien")
 alienQuery.equalTo(5, forKey: "id")
 
 alienQuery.first { (warpObject, error) in
-alien.set(object: 5, forKey: "age")
+    alien.set(object: 5, forKey: "age")
 
-alien.save { (success, error) in
-// The alien has been successfully updated
-}
+    alien.save { (success, error) in
+        // The alien has been successfully updated
+    }
 }
 ```
 
@@ -199,13 +199,13 @@ For example, if you are creating a `planet` for an `alien` object, you can use t
 
 ```Swift
 planet.save { (success, error) in
-let alien = WarpObject(className: "alien")
-alien.set(object: "Slitheen", forKey: "name")
-alien.set(object: planet, forKey: "planet")
+    let alien = WarpObject(className: "alien")
+    alien.set(object: "Slitheen", forKey: "name")
+    alien.set(object: planet, forKey: "planet")
 
-alien.save { (success, error) in
-// The alien has been successfully saved
-}
+    alien.save { (success, error) in
+        // The alien has been successfully saved
+    }
 }
 ```
 
@@ -220,7 +220,7 @@ alien.set('name', 'Captain Jack Harkness');
 alien.set('planet', planet); // Set the object directly
 
 alien.save { (success, error) in
-// The alien has been successfully saved
+    // The alien has been successfully saved
 }
 ```
 
@@ -317,12 +317,12 @@ The above query will return aliens with their respective planets as pointers:
 
 ```Swift
 alienQuery.find { (aliens, error) in
-if error == nil {
-for alien in aliens! {
-let greeting = "I am " + (alien.get(object: "name") as! String) + " and I come from the Planet " + (alien.get(object: "planet")?.get(object: "name") as! String)
-print(greeting)
-}
-}
+    if error == nil {
+        for alien in aliens! {
+            let greeting = "I am " + (alien.get(object: "name") as! String) + " and I come from the Planet " + (alien.get(object: "planet")?.get(object: "name") as! String)
+            print(greeting)
+        }
+    }
 }
 ```
 
@@ -338,15 +338,15 @@ Aside from id, createdAt and updatedAt, Warp User also has the following get met
 ```Swift
 let userQuery = WarpUser.query()
 userQuery.equalTo(5, forKey: "id").first { (user, error) in
-if let unwrappedError = error {
-print(unwrappedError)
-} else {
-var id = user?.objectId
-var createdAt = user?.createdAt
-var updatedAt = user?.updatedAt
-var username = user?.username
-var email = user?.email
-}
+    if let unwrappedError = error {
+        print(unwrappedError)
+    } else {
+        var id = user?.objectId
+        var createdAt = user?.createdAt
+        var updatedAt = user?.updatedAt
+        var username = user?.username
+        var email = user?.email
+    }
 }
 ```
 
@@ -359,11 +359,11 @@ In order to log in to a user account, you would use the `.login(username: String
 
 ```Swift
 WarpUser().login("username", password: "password") { (success, error) in
-if error != nil {
-// Successfully logged in
-} else {
-// There was an error
-}
+    if error != nil {
+        // Successfully logged in
+    } else {
+        // There was an error
+    }
 }
 ```
 
@@ -386,12 +386,12 @@ user.setUsername("Luke Smith")
 user.setPassword("k9_and_sara")
 
 user.signUp { (success, error) in
-if error != nil {
-// Signed up; `.current()` returns the registered user
-let current = WarpUser.current()
-} else {
-// There was an error
-}
+    if error != nil {
+        // Signed up; `.current()` returns the registered user
+        let current = WarpUser.current()
+    } else {
+        // There was an error
+    }
 }
 ```
 
@@ -404,12 +404,12 @@ To log out of a user account, you would use the `.logOut()` method:
 
 ```Swift
 user.logout { (success, error) in
-if error != nil {
-// Logged out; `.current()` now returns nil
-var current = WarpUser.current()
-} else {
-// There was an error
-}
+    if error != nil {
+        // Logged out; `.current()` now returns nil
+        var current = WarpUser.current()
+    } else {
+        // There was an error
+    }
 }
 ```
 
@@ -421,10 +421,10 @@ To run Warp [Functions](http://github.com/dividedbyzeroco/warp-server#functions)
 // WarpFunction.run(functionName: String, parameters: [String: Any]?, completion: { (result, error) in })
 
 WarpFunction.run("get-votes", parameters: ["from":"2016-08-14", "to":"2016-08-15"]) { (result, error) in
-if error == nil {
-// `result` contains a JSON Object of the results from the API
-} else {
-// There was an error
-}
+    if error == nil {
+        // `result` contains a JSON Object of the results from the API
+    } else {
+        // There was an error
+    }
 }
 ```
