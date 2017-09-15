@@ -9,6 +9,8 @@ target 'WarpSDK' do
   pod 'EVReflection'
   pod 'SwiftyJSON'
   pod 'Alamofire', '~> 4.4'
+  pod 'PromiseKit', '~> 4.4'
+  pod 'PromiseKit/Alamofire'
 
   target 'WarpSDKTests' do
     inherit! :search_paths

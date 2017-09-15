@@ -3,18 +3,35 @@ PODS:
   - EVReflection (4.16.3):
     - EVReflection/Core (= 4.16.3)
   - EVReflection/Core (4.16.3)
+  - PromiseKit (4.4.0):
+    - PromiseKit/Foundation (= 4.4.0)
+    - PromiseKit/QuartzCore (= 4.4.0)
+    - PromiseKit/UIKit (= 4.4.0)
+  - PromiseKit/Alamofire (4.4.0):
+    - Alamofire (~> 4.0)
+    - PromiseKit/CorePromise
+  - PromiseKit/CorePromise (4.4.0)
+  - PromiseKit/Foundation (4.4.0):
+    - PromiseKit/CorePromise
+  - PromiseKit/QuartzCore (4.4.0):
+    - PromiseKit/CorePromise
+  - PromiseKit/UIKit (4.4.0):
+    - PromiseKit/CorePromise
   - SwiftyJSON (3.1.4)
 
 DEPENDENCIES:
   - Alamofire (~> 4.4)
   - EVReflection
+  - PromiseKit (~> 4.4)
+  - PromiseKit/Alamofire
   - SwiftyJSON
 
 SPEC CHECKSUMS:
   Alamofire: dc44b1600b800eb63da6a19039a0083d62a6a62d
   EVReflection: 78a60b3c628a2e765652cdc554a903a3e40b16c8
+  PromiseKit: ecf5fe92275d57ee77c9ede858af47a162e9b97e
   SwiftyJSON: c2842d878f95482ffceec5709abc3d05680c0220
 
-PODFILE CHECKSUM: b025afa15d1ff3499b56615dc1d5824aaef1daf0
+PODFILE CHECKSUM: 5133076bf6d25f957cfcb6c8dcd3494f49873276
 
 COCOAPODS: 1.2.0
