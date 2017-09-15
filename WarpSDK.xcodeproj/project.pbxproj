@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		37630390D36373BB2D2F51FA /* Pods_WarpSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C4465D310A4A4BF12693A0B5 /* Pods_WarpSDK.framework */; };
 		3C2551D1B28200EDCD47CA92 /* Pods_WarpSDKTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3C3B194048087A1FD857354E /* Pods_WarpSDKTests.framework */; };
-		A62A8D0D1EF24A1C00512DB0 /* WarpUserQuery.swift in Sources */ = {isa = PBXBuildFile; fileRef = A62A8D0C1EF24A1C00512DB0 /* WarpUserQuery.swift */; };
 		A655FC6C1DD19D2F003F00E1 /* WarpSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A655FC621DD19D2E003F00E1 /* WarpSDK.framework */; };
 		A655FC711DD19D2F003F00E1 /* WarpSDKTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A655FC701DD19D2F003F00E1 /* WarpSDKTests.swift */; };
 		A655FC731DD19D2F003F00E1 /* WarpSDK.h in Headers */ = {isa = PBXBuildFile; fileRef = A655FC651DD19D2E003F00E1 /* WarpSDK.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -47,7 +46,6 @@
 		3C3B194048087A1FD857354E /* Pods_WarpSDKTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_WarpSDKTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		6A38DCB92589DB93707395C4 /* Pods-WarpSDKTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WarpSDKTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-WarpSDKTests/Pods-WarpSDKTests.debug.xcconfig"; sourceTree = "<group>"; };
 		967AD2239892D1788BE737A2 /* Pods-WarpSDK.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WarpSDK.debug.xcconfig"; path = "Pods/Target Support Files/Pods-WarpSDK/Pods-WarpSDK.debug.xcconfig"; sourceTree = "<group>"; };
-		A62A8D0C1EF24A1C00512DB0 /* WarpUserQuery.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WarpUserQuery.swift; sourceTree = "<group>"; };
 		A655FC621DD19D2E003F00E1 /* WarpSDK.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = WarpSDK.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A655FC651DD19D2E003F00E1 /* WarpSDK.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WarpSDK.h; sourceTree = "<group>"; };
 		A655FC661DD19D2E003F00E1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -131,7 +129,6 @@
 				A655FC8F1DD19E66003F00E1 /* WarpAPI.swift */,
 				A655FC901DD19E66003F00E1 /* WarpObject.swift */,
 				A655FC971DD19E66003F00E1 /* WarpQuery.swift */,
-				A62A8D0C1EF24A1C00512DB0 /* WarpUserQuery.swift */,
 				A655FC921DD19E66003F00E1 /* WarpUser.swift */,
 				A655FC911DD19E66003F00E1 /* WarpFunction.swift */,
 				A655FC931DD19E66003F00E1 /* WarpResponse.swift */,
@@ -402,7 +399,6 @@
 				A655FC9D1DD19E66003F00E1 /* WarpFunction.swift in Sources */,
 				A655FCA41DD19E66003F00E1 /* WarpPointer.swift in Sources */,
 				A655FC9C1DD19E66003F00E1 /* WarpObject.swift in Sources */,
-				A62A8D0D1EF24A1C00512DB0 /* WarpUserQuery.swift in Sources */,
 				A655FCA21DD19E66003F00E1 /* WarpErrors.swift in Sources */,
 				A655FC9E1DD19E66003F00E1 /* WarpUser.swift in Sources */,
 				A655FC9B1DD19E66003F00E1 /* WarpAPI.swift in Sources */,
