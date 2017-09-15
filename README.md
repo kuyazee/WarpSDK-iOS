@@ -89,11 +89,11 @@ alien.set(object: 4, forKey: "type")
 Then, save the Object using the `.save()` method:
 
 ```Swift
-alien.save()
+_ = alien.save()
 
 // or 
 
-alien.save { (isSucess, error) in
+_ = alien.save { (isSucess, error) in
     if error != nil {
         print(error)
     } else {
@@ -104,7 +104,7 @@ alien.save { (isSucess, error) in
 
 // or 
 
-_ = alien.save().promise().then { _ in
+_ = alien.save().then { _ in
     print("The alien has been created with the following ID:", alien.id)
     print("The alien has been named:", alien.get(object: "name"))
 }.catch(execute: { (error) in
@@ -123,13 +123,13 @@ let alienQuery = Warp.Query(className: "alien")
 let alienQuery = Warp.ObjectQuery(className: "alien")
 
 alienQuery.equalTo(16, forKey: "id")
-alienQuery.first { (warpObject, error) in
+_ = alienQuery.first { (warpObject, error) in
     // You now have a copy of alien (id: 16) from the database
 }
 
 // or
 
-alienQuery.first().then { warpObject in
+_ = alienQuery.first().then { warpObject in
     // You now have a copy of alien (id: 16) from the database
 }
 ```
@@ -164,7 +164,7 @@ let alien = Warp.Object(className: "alien")
 alien.set(object: "Madam Vestra", forKey: "name")
 alien.set(object: 4, forKey: "type")
 
-alien.save { (isSucess, error) in
+_ = alien.save { (isSucess, error) in
     // If this is the 200th alien, change its type, for example
     if alien.id > 200 {
         alien.set(object: 5, forKey: "type")
@@ -179,7 +179,7 @@ alien.save { (isSucess, error) in
 
 // or
 
-alien.save().promise().then { _ in
+_ = alien.save().then { _ in
     // If this is the 200th alien, change its type, for example
     if alien.id > 200 {
         alien.set(object: 5, forKey: "type")
@@ -200,7 +200,7 @@ let alienQuery = Warp.Query(className: "alien")
 let alienQuery = Warp.ObjectQuery(className: "alien")
 alienQuery.equalTo(5, forKey: "id")
 
-alienQuery.first { (alien, error) in
+_ = alienQuery.first { (alien, error) in
     alien?.set(object: 5, forKey: "age")
 
     alien?.save { (isSucess, error) in
@@ -210,7 +210,7 @@ alienQuery.first { (alien, error) in
 
 // or
 
-alienQuery.first().then { alien in
+_ = alienQuery.first().then { alien in
     alien?.set(object: 30, forKey: "age")
 
     return alien?.save()
@@ -228,19 +228,19 @@ Additionally, if the key you are trying to update is an `integer` and you want t
 If you want to delete a saved or retrieved object, all you need to do is call the `.destroy()` method of the object:
 
 ```Swift
-alien.destroy()
+_ = alien.destroy()
 ```
 
 Additionally, like `.save()`, the `.destroy()` method also returns a promise, which you can chain other processes to:
 
 ```Swift
-alien.destroy { (isSucess, error) in
+_ = alien.destroy { (isSucess, error) in
     print("The alien has been destroyed")            
 }
 
 // or
 
-alien.destroy().promise().then { _ in
+_ = alien.destroy().promise().then { _ in
     print("The alien has been destroyed")
 }
 
@@ -257,7 +257,7 @@ For example, if you are creating a `planet` for an `alien` object, you can use t
 let planet = Warp.Object(className: "planet")
 planet.set(object: "Raxocoricofallipatorius", forKey: "name") 
 
-planet.save { (isSucess, error) in
+_ = planet.save { (isSucess, error) in
     let alien = Warp.Object(className: "alien")
     alien.set(object: "Slitheen", forKey: "name")
     alien.set(object: planet, forKey: "planet")
@@ -269,7 +269,7 @@ planet.save { (isSucess, error) in
 
 // or
 
-planet.save().promise().then { _ in 
+_ = planet.save().then { _ in 
     let alien = Warp.Object(className: "alien")
     alien.set(object: "Slitheen", forKey: "name")
     alien.set(object: planet, forKey: "planet")
@@ -290,13 +290,13 @@ let alien = Warp.Object(className: "alien")
 alien.set(object: "Captain Jack Harkness", forKey: "name")
 alien.set(object: planet, forKey: "planet")
 
-alien.save { (isSucess, error) in
+_ = alien.save { (isSucess, error) in
     // The alien has been successfully saved
 }
 
 // or
 
-alien.save().promise().then { _ in
+_ = alien.save().then { _ in
     // The alien has been successfully saved
 }
 ```
@@ -314,37 +314,37 @@ let alienQuery = Warp.Query(className: "alien")
 let alienQuery = Warp.ObjectQuery(className: "alien")
 
 // Use `.find()` to get all the objects in the `alien` table
-alienQuery.find { (aliens, error) in
+_ = alienQuery.find { (aliens, error) in
     // You now have a collection of all the aliens        
 }
 
 // or
 
-alienQuery.find().then { aliens in
+_ = alienQuery.find().then { aliens in
     // You now have a collection of all the aliens
 }
 
 
 // Use `.first()` to get the first object in the `alien` table
-alienQuery.first { (alien, error) in
+_ = alienQuery.first { (alien, error) in
     // You now have the first alien object            
 }
 
 // or 
 
-alienQuery.first().then { alien in 
+_ = alienQuery.first().then { alien in 
     // You now have the first alien object
 }
 
 // Use `.get(_ objectId: Int)` to get a specific object in the `alien` table
 let alienQuery = Warp.Query(className: "alien")
-alienQuery.get(3) { (object, error) in
+_ = alienQuery.get(3) { (object, error) in
     // You now have the object with the id 3
 }
 
 // or
 
-alienQuery.get(3).then { (object) in
+_ = alienQuery.get(3).then { (object) in
     // You now have the object with the id 3
 }
 

@@ -29,6 +29,7 @@
 		A655FCA51DD19E66003F00E1 /* WarpModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A655FC991DD19E66003F00E1 /* WarpModel.swift */; };
 		A655FCA81DD1A017003F00E1 /* Alamofire.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A655FCA71DD1A017003F00E1 /* Alamofire.framework */; };
 		A655FCAB1DD1CE65003F00E1 /* EVReflection.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A655FCAA1DD1CE65003F00E1 /* EVReflection.framework */; };
+		A6CAD09F1F6C368E00211EA5 /* TestFIle.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6CAD09E1F6C368E00211EA5 /* TestFIle.swift */; };
 		A6CD16B21E4AC206006CDCD9 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6CD16B11E4AC206006CDCD9 /* Extensions.swift */; };
 /* End PBXBuildFile section */
 
@@ -69,6 +70,7 @@
 		A655FC991DD19E66003F00E1 /* WarpModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WarpModel.swift; sourceTree = "<group>"; };
 		A655FCA71DD1A017003F00E1 /* Alamofire.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Alamofire.framework; path = "Carthage/Checkouts/Alamofire/build/Debug-iphoneos/Alamofire.framework"; sourceTree = "<group>"; };
 		A655FCAA1DD1CE65003F00E1 /* EVReflection.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = EVReflection.framework; path = "Carthage/Checkouts/EVReflection/EVReflection/build/Debug-iphoneos/EVReflection.framework"; sourceTree = "<group>"; };
+		A6CAD09E1F6C368E00211EA5 /* TestFIle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestFIle.swift; sourceTree = "<group>"; };
 		A6CD16B11E4AC206006CDCD9 /* Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		AF4BC427567C55205E850F0D /* Pods-WarpSDK.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WarpSDK.release.xcconfig"; path = "Pods/Target Support Files/Pods-WarpSDK/Pods-WarpSDK.release.xcconfig"; sourceTree = "<group>"; };
 		C4465D310A4A4BF12693A0B5 /* Pods_WarpSDK.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_WarpSDK.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -167,6 +169,7 @@
 		A687F99B1F68D53F00C695B0 /* SDKTestFiles */ = {
 			isa = PBXGroup;
 			children = (
+				A6CAD09E1F6C368E00211EA5 /* TestFIle.swift */,
 			);
 			path = SDKTestFiles;
 			sourceTree = "<group>";
@@ -396,6 +399,7 @@
 				A655FCA01DD19E66003F00E1 /* WarpQueryBuilder.swift in Sources */,
 				A655FC9F1DD19E66003F00E1 /* WarpResponse.swift in Sources */,
 				A655FCA51DD19E66003F00E1 /* WarpModel.swift in Sources */,
+				A6CAD09F1F6C368E00211EA5 /* TestFIle.swift in Sources */,
 				A655FC9D1DD19E66003F00E1 /* WarpFunction.swift in Sources */,
 				A655FCA41DD19E66003F00E1 /* WarpPointer.swift in Sources */,
 				A655FC9C1DD19E66003F00E1 /* WarpObject.swift in Sources */,
