@@ -37,4 +37,8 @@ public extension WarpDataRequest {
     func warpResponse(_ block: @escaping (_ warpResult: WarpResult) -> Void) -> WarpDataRequest {
         return responseJSON(completionHandler: { block(WarpTools.toResult($0)) })
     }
+    
+    func promise() -> Promise<Any> {
+        return self.responseJSON()
+    }
 }
