@@ -78,7 +78,3 @@ public enum WarpResult {
     }
 }
 
-public enum WarpOrder: Int {
-    case ascending = 1
-    case descending = -1
-}

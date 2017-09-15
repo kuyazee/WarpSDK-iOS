@@ -6,236 +6,305 @@
 //
 //
 
-open class WarpQueryBuilder {
-    open var param: [String: Any] = [:]
-    
-    public init() {}
-    
-    public init(_ param: [String: Any]) {
-        self.param = param
-    }
-    
-    open func include(_ values: [String]) -> WarpQueryBuilder {
-        self.param["include"] = String(describing: values) 
-        return self
-    }
-    
-    open func query(_ values: [WarpQueryConstraint]) -> WarpQueryBuilder {
-        var string: String = ""
-        values.enumerated().forEach { (i, value) in
-            switch value.constraint {
-            case .EqualTo, .NotEqualTo, .ContainsString:
-                if value.value is String {
-                    string = string + "\"\(value.key)\":{\"\(value.constraint.rawValue)\":\"\(value.value as! String)\"}"
-                } else {
-                    string = string + "\"\(value.key)\":{\"\(value.constraint.rawValue)\":\(value.value)}"
-                }
-            case .ContainedInArray, .NotContainedInArray:
-                string = string + "\"\(value.key)\":{\"\(value.constraint.rawValue)\":\(value.value)}"
-            default:
-                string = string + "\"\(value.key)\":{\"\(value.constraint.rawValue)\":\(value.value)}"
-            }
-            
-            if values.count > 1 && i != values.count - 1 {
-                string = string + ", "
-            }
-        }
-        self.param["where"] = "{\(string)}" 
-        return self
-    }
-    
-    open func sort(_ values: [WarpSort]) -> WarpQueryBuilder {
-        var string: String = ""
-        values.enumerated().forEach { (i, value) in
-            string = string + "{\"\(value.key)\": \(value.order.rawValue)}"
-            if values.count > 1 && i != values.count - 1 {
-                string = string + ", "
-            }
-        }
-        self.param["sort"] = "[\(string)]" 
-        return self
-    }
-    
-    open func add(_ key: String, value: Any) -> WarpQueryBuilder {
-        self.param[key] = value
-        return self
-    }
-    
-    open func limit(_ value: Int) -> WarpQueryBuilder {
-        self.param["limit"] = value 
-        return self
-    }
-    
-    open func skip(_ value: Int) -> WarpQueryBuilder {
-        self.param["skip"] = value 
-        return self
-    }
-    
-    open func showDebug() {
-        guard param.keys.count > 0 else {
-            print("WARPLOG There are no parameters")
-            return
+import Foundation
+
+// MARK: - Warp.QueryBuilder
+public extension Warp {
+    public class QueryBuilder {
+        
+        /// Builder Model for Parameters
+        public struct Parameters {
+            var include: [String] = []
+            var `where`: [Warp.QueryBuilder.Constraint] = []
+            var sort: [WarpSort] = []
+            var limit: Int? = nil
+            var skip: Int? = nil
+
         }
         
-        print("\n\nWARPLOG START =================== \n")
-        for key in param.keys {
-            switch key {
-            case "include":
-                print("include: ", String(param["include"] as! String) ?? "")
-            case "where":
-                print("where: ", String(param["where"] as! String) ?? "")
-            case "sort":
-                print("sort: ", String(param["sort"] as! String) ?? "")
-            case "limit":
-                print("limit: ", String(param["limit"] as! Int))
-            case "skip":
-                print("skip: ", String(param["skip"] as! Int))
-            default:
-                print(key + ": ", String(describing: param[key]))
+        /// dictionary to store values
+        public var dictionary: [String: Any] = [:]
+        
+        public init(parameters: Parameters) {
+            // parse parameters.include
+            self.dictionary["include"] = String(describing: parameters.include)
+            
+            // parse parameters.where
+            self.dictionary["where"] = {
+                var string: String = ""
+                parameters.where.enumerated().forEach { (i, value) in
+                    let generatedString = "\"\(value.key)\":{\"\(value.constraint.rawValue)\":"
+                    
+                    if let stringValue = value.value as? String {
+                        string = string + "\(generatedString)\"\(stringValue)\"}"
+                    } else {
+                        string = string + "\(generatedString)\(value.value)}"
+                    }
+                    
+                    if parameters.where.count > 1 && i != parameters.where.count - 1 {
+                        string = string + ", "
+                    }
+                }
+                return "{\(string)}"
+            }()
+            
+            // parse parameters.sort
+            self.dictionary["sort"] = {
+                var string: String = ""
+                parameters.sort.enumerated().forEach { (i, value) in
+                    string = string + "{\"\(value.key)\": \(value.order.rawValue)}"
+                    if parameters.sort.count > 1 && i != parameters.sort.count - 1 {
+                        string = string + ", "
+                    }
+                }
+                return "[\(string)]"
+            }()
+            
+            // parse parameters.limit
+            if let limit = parameters.limit {
+                self.dictionary["limit"] = limit
             }
+            
+            // parse parameters.skip
+            if let skip = parameters.skip {
+                self.dictionary["skip"] = skip
+            }
+            
         }
-        print("WARPLOG END ===================\n\n")
+        
+        public init(_ dictionary: [String: Any]) {
+            self.dictionary = dictionary
+        }
+        
+        open func showDebug() {
+            guard self.dictionary.keys.count > 0 else {
+                print("WARPLOG There are no parameters")
+                return
+            }
+            
+            print("\n\nWARPLOG START =================== \n")
+            for key in self.dictionary.keys {
+                switch key {
+                case "include":
+                    print("include: \(self.dictionary["include"] ?? "")")
+                case "where":
+                    print("where: \(self.dictionary["where"] ?? "")")
+                case "sort":
+                    print("sort: \(self.dictionary["sort"] ?? "")")
+                case "limit":
+                    print("limit: \(self.dictionary["limit"] ?? "")")
+                case "skip":
+                    print("skip: \(self.dictionary["skip"] ?? "")")
+                default:
+                    print(key + ": \(self.dictionary[key] ?? "")")
+                }
+            }
+            print("WARPLOG END ===================\n\n")
+        }
     }
 }
 
-public struct WarpQueryConstraint {
-    public var key: String = ""
-    public var constraint: WarpConstraint = .EqualTo
-    public var value: Any = "" 
+// MARK: - Warp.QueryBuilder.Constraint
+public extension Warp.QueryBuilder {
     
-    public init(equalTo value: Any, key: String) {
-        self.key = key
-        self.constraint = .EqualTo
-        self.value = value
-    }
-    
-    public init(notEqualTo value: Any, key: String) {
-        self.key = key
-        self.constraint = .NotEqualTo
-        self.value = value
-    }
-    
-    public init(greaterThan value: Any, key: String) {
-        self.key = key
-        self.constraint = .GreaterThan
-        self.value = value
-    }
-    
-    public init(greaterThanOrEqualTo value: Any, key: String) {
-        self.key = key
-        self.constraint = .GreaterThanOrEqualTo
-        self.value = value
-    }
-    
-    public init(lessThan value: Any, key: String) {
-        self.key = key
-        self.constraint = .LessThan
-        self.value = value
-    }
-    
-    public init(lessThanOrEqualTo value: Any, key: String) {
-        self.key = key
-        self.constraint = .LessThanOrEqualTo
-        self.value = value
-    }
-    
-    public init(existsKey key: String) {
-        self.key = key
-        self.constraint = .Exists
-        self.value = 1 
-    }
-    
-    public init(notExistsKey key: String) {
-        self.key = key
-        self.constraint = .Exists
-        self.value = 0 
-    }
-    
-    public init(containedIn values: [Any], key: String) {
-        self.key = key
-        self.constraint = .ContainedInArray
-        self.value = values 
-    }
-    
-    public init(notContainedIn values: [Any], key: String) {
-        self.key = key
-        self.constraint = .NotContainedInArray
-        self.value = values 
-    }
-    
-    public init(startsWith value: String, key: String) {
-        self.key = key
-        self.constraint = .StartsWithString
-        self.value = value 
-    }
-    
-    public init(endsWith value: String, key: String) {
-        self.key = key
-        self.constraint = .EndsWithString
-        self.value = value 
-    }
-    
-    public init(contains value: String, key: String) {
-        self.key = key
-        self.constraint = .ContainsString
-        self.value = value 
-    }
-    
-    public init(contains value: String, keys: [String]) {
-        var string: String = ""
-        keys.enumerated().forEach { (i, key) in
-            switch i {
-            case 0:
-                string = key
-            case keys.count:
-                string = string + key
-            default:
-                string = string + "|" + key
-            }
+    /// This class will be used to map the Query Parameters.
+    public struct Constraint {
+
+        /// This is the database row keyy
+        public var key: String
+        
+        /// This is the Constraint value that will be used
+        public var constraint: WarpConstraint
+        
+        /// This is the query value
+        public var value: Any
+
+        
+        public init(equalTo value: Any, key: String) {
+            self.key = key
+            self.constraint = .equalTo
+            self.value = value
         }
-        self.key = "\(string)"
-        self.constraint = .ContainsString
-        self.value = value 
+        
+        public init(notEqualTo value: Any, key: String) {
+            self.key = key
+            self.constraint = .notEqualTo
+            self.value = value
+        }
+        
+        public init(greaterThan value: Any, key: String) {
+            self.key = key
+            self.constraint = .greaterThan
+            self.value = value
+        }
+        
+        public init(greaterThanOrEqualTo value: Any, key: String) {
+            self.key = key
+            self.constraint = .greaterThanOrEqualTo
+            self.value = value
+        }
+        
+        public init(lessThan value: Any, key: String) {
+            self.key = key
+            self.constraint = .lessThan
+            self.value = value
+        }
+        
+        public init(lessThanOrEqualTo value: Any, key: String) {
+            self.key = key
+            self.constraint = .lessThanOrEqualTo
+            self.value = value
+        }
+        
+        public init(existsKey key: String) {
+            self.key = key
+            self.constraint = .exists
+            self.value = 1
+        }
+        
+        public init(notExistsKey key: String) {
+            self.key = key
+            self.constraint = .exists
+            self.value = 0
+        }
+        
+        public init(containedIn values: [Any], key: String) {
+            self.key = key
+            self.constraint = .containedInArray
+            self.value = values
+        }
+        
+        public init(notContainedIn values: [Any], key: String) {
+            self.key = key
+            self.constraint = .notContainedInArray
+            self.value = values
+        }
+        
+        public init(containedInOrDoesNotExist values: [Any], key: String) {
+            self.key = key
+            self.constraint = .containedInOrDoesNotExist
+            self.value = "\(values)"
+        }
+        
+        public init(startsWith value: String, key: String) {
+            self.key = key
+            self.constraint = .startsWithString
+            self.value = value
+        }
+        
+        public init(endsWith value: String, key: String) {
+            self.key = key
+            self.constraint = .endsWithString
+            self.value = value
+        }
+        
+        public init(contains value: String, key: String) {
+            self.key = key
+            self.constraint = .containsString
+            self.value = value
+        }
+        
+        public init(contains value: String, keys: [String]) {
+            var string: String = ""
+            keys.enumerated().forEach { (i, key) in
+                switch i {
+                case 0:
+                    string = key
+                case keys.count:
+                    string = string + key
+                default:
+                    string = string + "|" + key
+                }
+            }
+            self.key = "\(string)"
+            self.constraint = .containsString
+            self.value = value
+        }
+        
+        public init(containsEither values: [String], key: String) {
+            self.key = key
+            self.constraint = .containsEitherStrings
+            self.value = "\(values)"
+        }
+        
+        public init(containsAll values: [String], key: String) {
+            self.key = key
+            self.constraint = .containsAllStrings
+            self.value = "\(values)"
+        }
+    }
+}
+
+// MARK: - Warp.QueryBuilder.Sort
+public extension Warp.QueryBuilder {
+    public struct Sort {
+        public var key: String = ""
+        public var order: WarpOrder = .ascending
+        
+        public init(by key: String) {
+            self.key = key
+            self.order = .ascending
+        }
+        
+        public init(byDescending key: String) {
+            self.key = key
+            self.order = .descending
+        }
     }
 }
 
 public enum WarpConstraint: String {
     /// eq: equal to
-    case EqualTo = "eq"
+    case equalTo = "eq"
     
     /// neq: not equal to
-    case NotEqualTo = "neq"
+    case notEqualTo = "neq"
     
     /// gt: greater than
-    case GreaterThan = "gt"
+    case greaterThan = "gt"
     
     /// gte: greater than or equal to
-    case GreaterThanOrEqualTo = "gte"
+    case greaterThanOrEqualTo = "gte"
     
     /// lt: less than
-    case LessThan = "lt"
+    case lessThan = "lt"
     
     /// lte: less than or equal to
-    case LessThanOrEqualTo = "lte"
+    case lessThanOrEqualTo = "lte"
     
     /// ex: is not null/is null (value is either true or false)
-    case Exists = "ex"
+    case exists = "ex"
     
     /// in: contained in array
-    case ContainedInArray = "in"
+    case containedInArray = "in"
     
     /// nin: not contained in array
-    case NotContainedInArray = "nin"
+    case notContainedInArray = "nin"
     
+    /// inx: contained in array, or is null
+    case containedInOrDoesNotExist = "inx"
     
     /// str: starts with the specified string
-    case StartsWithString = "str"
+    case startsWithString = "str"
     
     /// end: ends with the specified string
-    case EndsWithString = "end"
+    case endsWithString = "end"
     
     /// has: contains the specified string (to search multiple keys, separate the key names with |)
-    case ContainsString = "has"
+    case containsString = "has"
+    
+    /// hasi: contains either of the specified strings
+    case containsEitherStrings = "hasi"
+    
+    /// hasa: contains all of the specified strings
+    case containsAllStrings = "hasa"
+    
+    
+//    fi: found in the given subquery, for more info, see the Subqueries section
+//    fie: found in either of the given subqueries, for more info, see the Subqueries section
+//    fia: found in all of the given subqueries, for more info, see the Subqueries section
+//    nfi: not found in the given subquery, for more info, see the Subqueries section
+//    nfe: not found in either of the given subqueries, for more info, see the Subqueries section
 }
 
 public struct WarpSort {
@@ -251,4 +320,9 @@ public struct WarpSort {
         self.key = key
         self.order = .descending
     }
+}
+
+public enum WarpOrder: Int {
+    case ascending = 1
+    case descending = -1
 }
