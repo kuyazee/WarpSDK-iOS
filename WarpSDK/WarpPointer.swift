@@ -32,7 +32,7 @@ open class WarpPointer<Attribute>: EVObject where Attribute: WarpModel {
     }
     
     open func map() -> [String: Any] {
-        return WarpPointer.map(className: className, id: id, attributes: attributes)
+        return WarpPointer.map(className: self.className, id: self.id, attributes: self.attributes)
     }
     
     override open func setValue(_ value: Any?, forUndefinedKey key: String) {
@@ -60,20 +60,20 @@ extension WarpPointer {
             "id": id]
     }
     
-    open static func map(warpObject object: WarpObject) -> [String: Any] {
+    open static func map(warpObject object: Warp.Object) -> [String: Any] {
         return [
             "type":"Pointer",
-            "className": object.className,
-            "id": object.objectId,
-            "attributes": object.objects]
+            "className": object.objectClassName,
+            "id": object.id,
+            "attributes": object.dictionary]
     }
     
-    open static func map(warpUser object: WarpUser) -> [String: Any] {
+    open static func map(warpUser object: Warp.User) -> [String: Any] {
         return [
             "type":"Pointer",
-            "className": object.className,
-            "id": object.objectId,
-            "attributes": object.objects]
+            "className": object.objectClassName,
+            "id": object.id,
+            "attributes": object.dictionary]
     }
     
     open static func map(className: String, id: Int, attributes: Any?) -> [String: Any] {
