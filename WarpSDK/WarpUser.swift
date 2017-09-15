@@ -8,98 +8,114 @@
 
 import Foundation
 
-public class WarpUser: WarpObject {
-    internal override var param: [String: Any] {
-        didSet {
-            for (key, value) in param {
-                switch key {
-                case "id":
-                    _objectId = value as! Int
-                case "created_at":
-                    _createdAt = value as! String
-                case "updated_at":
-                    _updatedAt = value as! String
-                case "session_token":
-                    _sessionToken = value as! String
-                default:
-                    break
-                }
-            }
-        }
-    }
-    
-    internal var _username: String = ""
-    internal var _password: String = ""
-    internal var _email: String = ""
-    internal var _sessionToken: String = ""
-    
-    public var username: String { return _username }
-    public var password: String { return _password }
-    public var email: String { return _email }
-    public var sessionToken: String { return _sessionToken }
-    
-    public override func set(object value: Any, forKey: String) -> Self {
-        switch forKey {
-        case "created_at", "updated_at", "id", "session_token":
-            fatalError("This action is not permitted")
-        default:
-            if value is WarpObject {
-                self.param[forKey] = WarpPointer.map(warpObject: value as! WarpObject) as Any?
-                return self
-            }
-            
-            if value is WarpUser {
-                self.param[forKey] = WarpPointer.map(warpUser: value as! WarpUser) as Any?
-                return self
-            }
-            
-            self.param[forKey] = value
-            return self
-        }
-    }
 
-    required public init() {
-        super.init(className: "user")
-    }
+public extension Warp {
+    public class User: Warp.Object {
     
-    public required init(className: String) {
-        fatalError("init(className:) cannot be userd for WarpUser class, use `WarpUser()` instead")
-    }
-    
-    public override class func createWithoutData(id: Int) -> WarpUser {
-        let user = WarpUser()
-        user.param["id"] = id as AnyObject?
-        return WarpUser()
-    }
-    
-    public static func query() -> WarpUserQuery {
-        return WarpUserQuery()
-    }
-    
-    public func setUsername(_ username: String) -> WarpUser {
-        _username = username
-        param["username"] = username as AnyObject?
-        return self
-    }
-    
-    public func setPassword(_ password: String) -> WarpUser {
-        _password = password
-        param["password"] = password as AnyObject?
-        return self
-    }
-    
-    public override func save(_ completion: @escaping WarpResultBlock) {
-        guard let warp = Warp.shared else {
-            fatalError("WarpServer is not yet initialized")
+        public required init() {
+            super.init(className: "user")
         }
-        if objectId > 0 {
-            let _ = Warp.API.put(warp.generateEndpoint(.users(id: objectId)), parameters: self.objects, headers: warp.HEADER()).warpResponse { (warpResult) in
+        
+        override public func set(object value: Any, forKey: String) -> Self {
+            if forKey == "session_token" {
+                fatalError("This action is not permitted")
+            } else {
+                _ = super.set(object: value, forKey: forKey)
+                return self
+            }
+        }
+        
+        public func set(username: String) -> Self {
+            return self.set(object: username, forKey: "username")
+        }
+        
+        public func set(password: String) -> Self {
+            return self.set(object: password, forKey: "password")
+        }
+        
+        public func set(email: String) -> Self {
+            return self.set(object: email, forKey: "email")
+        }
+        
+        public required init(className: String) {
+            super.init(className: "user")
+        }
+        
+        required public init(className: String, json: [String : Any]) {
+            super.init(className: "user", json: json)
+        }
+        
+        public override class func createWithoutData(id: Int, className: String = "") -> Warp.User {
+            let user = Warp.User()
+            user.dictionary["id"] = id
+            return user
+        }
+        
+        /// Creates a Warp.Query instance for this user
+        public func query() -> Warp.Query<Warp.User> {
+            return Warp.Query<Warp.User>()
+        }
+        
+        override public func save(_ completion: @escaping WarpResultBlock = ({ _, _ in })) -> WarpDataRequest {
+            guard let warp = Warp.shared else {
+                fatalError("WarpServer is not yet initialized")
+            }
+            
+            let endPoint: String = {
+                if self.id > 0 {
+                    return warp.generateEndpoint(.users(id: self.id))
+                } else {
+                    return warp.generateEndpoint(.users(id: nil))
+                }
+            }()
+            
+            let request: WarpDataRequest = {
+                if self.id > 0 {
+                    return Warp.API.put(endPoint, parameters: self.dictionary, headers: warp.HEADER())
+                } else {
+                    return Warp.API.post(endPoint, parameters: self.dictionary, headers: warp.HEADER())
+                }
+            }()
+            
+            return request.warpResponse { (warpResult) in
                 switch warpResult {
                 case .success(let JSON):
                     let warpResponse = WarpResponse(json: JSON, result: [String: Any].self)
                     switch warpResponse.statusType {
                     case .success:
-                        self.setValues(warpResponse.result!)
+                        self.dictionary = warpResponse.result!
+                        completion(true, nil)
+                    default:
+                        completion(true, WarpError(message: warpResponse.message, status: warpResponse.status))
+                    }
+                    break
+                case .failure(let error):
+                    completion(false, error)
+                }
+            }
+        }
+        
+        override public func destroy(_ completion: @escaping WarpResultBlock = ({ _, _ in })) -> WarpDataRequest {
+            guard let warp = Warp.shared else {
+                fatalError("WarpServer is not yet initialized")
+            }
+            
+            let endPoint = warp.generateEndpoint(.users(id: self.id))
+            
+            let request = Warp.API.delete(endPoint, parameters: self.dictionary, headers: warp.HEADER())
+            
+            guard self.id > 0 else {
+                completion(false, WarpError(code: .objectDoesNotExist))
+                return request
+            }
+            
+            return request.warpResponse { (warpResult) in
+                switch warpResult {
+                case .success(let JSON):
+                    let warpResponse = WarpResponse(json: JSON, result: [String: Any].self)
+                    switch warpResponse.statusType {
+                    case .success:
+                        self.dictionary = warpResponse.result!
                         completion(true, nil)
                     default:
                         completion(true, WarpError(message: warpResponse.message, status: warpResponse.status))
@@ -108,37 +124,51 @@ public class WarpUser: WarpObject {
                     completion(false, error)
                 }
             }
-        } else {
-            let _ = Warp.API.post(warp.generateEndpoint(.users(id: nil)), parameters: self.objects, headers: warp.HEADER()).warpResponse { (warpResult) in
-                switch warpResult {
-                case .success(let JSON):
-                    let warpResponse = WarpResponse(json: JSON, result: [String: Any].self)
-                    switch warpResponse.statusType {
-                    case .success:
-                        self.setValues(warpResponse.result!)
-                        completion(true, nil)
-                    default:
-                        completion(true, WarpError(message: warpResponse.message, status: warpResponse.status))
-                    }
-                case .failure(let error):
-                    completion(false, error)
-                }
-            }
         }
     }
+}
+
+// MARK: - Calculated Objects
+extension Warp.User {
+    /// returns the username
+    public var username: String {
+        return self.dictionary["username"] as? String ?? ""
+    }
     
+    /// returns the password if there is a password
+    public var password: String {
+        return self.dictionary["password"] as? String ?? ""
+    }
+    
+    /// returns the email
+    public var email: String {
+        return self.dictionary["email"] as? String ?? ""
+    }
+    
+    /// returns the sessionToken
+    public var sessionToken: String {
+        return self.dictionary["session_token"] as? String ?? ""
+    }
+}
+
+// MARK: - Login, Signup, Logout Calls
+extension Warp.User {
     public func login(_ username: String, password: String, completion: @escaping WarpResultBlock) {
         guard let warp = Warp.shared else {
             fatalError("WarpServer is not yet initialized")
         }
-        let _ = Warp.API.post(warp.generateEndpoint(.login), parameters: ["username":username,"password":password], headers: warp.HEADER()).warpResponse { (warpResult) in
+        let endPoint = warp.generateEndpoint(.login)
+        
+        let request = Warp.API.post(endPoint, parameters: ["username":username,"password":password], headers: warp.HEADER())
+        
+        _ = request.warpResponse { (warpResult) in
             switch warpResult {
             case .success(let JSON):
                 let warpResponse = WarpResponse(json: JSON, result: [String: Any].self)
                 switch warpResponse.statusType {
                 case .success:
-                    warpResponse.result!["username"] = username as AnyObject?
-                    self.setValues(warpResponse.result!)
+                    warpResponse.result!["username"] = username
+                    self.dictionary = warpResponse.result!
                     self.setCurrentUser()
                     completion(true, nil)
                 default:
@@ -155,15 +185,18 @@ public class WarpUser: WarpObject {
         guard let warp = Warp.shared else {
             fatalError("WarpServer is not yet initialized")
         }
-        let _ = Warp.API.post(warp.generateEndpoint(.users(id: nil)), parameters: self.objects, headers: warp.HEADER()).warpResponse { (warpResult) in
+        
+        let endPoint = warp.generateEndpoint(.users(id: nil))
+        
+        let request = Warp.API.post(endPoint, parameters: self.dictionary, headers: warp.HEADER())
+        
+        _ = request.warpResponse { (warpResult) in
             switch warpResult {
             case .success(let JSON):
                 let warpResponse = WarpResponse(json: JSON, result: [String: Any].self)
                 switch warpResponse.statusType {
                 case .success:
-                    self.login(self.username, password: self.password, completion: { (success, error) in
-                        completion(success, error)
-                    })
+                    self.login(self.username, password: self.password, completion: completion)
                 default:
                     completion(true, WarpError(message: warpResponse.message, status: warpResponse.status))
                 }
@@ -177,13 +210,18 @@ public class WarpUser: WarpObject {
         guard let warp = Warp.shared else {
             fatalError("WarpServer is not yet initialized")
         }
-        let _ = Warp.API.get(warp.generateEndpoint(.logout), parameters: nil, headers: warp.HEADER()).warpResponse { (warpResult) in
+        
+        let endPoint = warp.generateEndpoint(.logout)
+        
+        let request = Warp.API.get(endPoint, parameters: nil, headers: warp.HEADER())
+        
+        _ = request.warpResponse { (warpResult) in
             switch warpResult {
             case .success(let JSON):
                 let warpResponse = WarpResponse(json: JSON, result: [String: Any].self)
                 switch warpResponse.statusType {
                 case .success:
-                    WarpUser.deleteCurrent()
+                    Warp.User.deleteCurrent()
                     completion(true, nil)
                 default:
                     completion(true, WarpError(message: warpResponse.message, status: warpResponse.status))
@@ -195,22 +233,24 @@ public class WarpUser: WarpObject {
     }
 }
 
+
 // MARK: - Persistence
-extension WarpUser {
+extension Warp.User {
     internal func setCurrentUser() {
         var strings: [String] = []
-        for key in self.objects.keys {
+        for key in self.dictionary.keys {
             strings.append(key)
         }
         
         UserDefaults.standard.set(strings, forKey: "swrxCurrentUserKeys_rbBEAFVAWFBVWW")
-        for (key, value) in self.objects {
+        for (key, value) in self.dictionary {
             UserDefaults.standard.set(value, forKey: "swrxCurrentUser\(key)_9gehrpnvr2pv3r")
         }
     }
     
-    public static func current() -> WarpUser? {
-        let user: WarpUser = WarpUser()
+    public static func current() -> Warp.User? {
+        let user: Warp.User = Warp.User()
+        
         let keys: [String] = UserDefaults.standard.array(forKey: "swrxCurrentUserKeys_rbBEAFVAWFBVWW") as? [String] ?? []
         
         if keys.count == 0 {
