@@ -90,53 +90,12 @@ extension Warp {
 
 public typealias WarpResultBlock = (Bool, WarpError?) -> Void
 
-protocol WarpObjectInterface {
-    var param: [String: Any] { get set }
-    var className: String { get set }
     
-    var _objectId: Int { get set }
     
-    var _createdAt: String { get set }
     
-    var _updatedAt: String { get set }
-}
-
-extension WarpObjectInterface {
-    var objectId: Int { return _objectId }
-    
-    var createdAt: String { return _createdAt }
-    
-    var updatedAt: String { return _updatedAt }
-    
-    var objects: [String: Any] { return param }
-}
-
-protocol CanGet {
     func get(object forKey: String) -> Any?
-}
-
-protocol CanSet {
     func set(object value: Any, forKey: String) -> Self
-}
-
-protocol CanSave {
-    func save()
-    func save(_ completion: @escaping WarpResultBlock)
-}
-
-protocol CanDestroy {
-    func destroy()
-    func destroy(_ completion: @escaping WarpResultBlock)
-}
-
-protocol WarpObjectProtocol: WarpObjectInterface, CanGet, CanSet, CanSave, CanDestroy {
-    static func createWithoutData(id: Int, className: String) -> WarpObject
-    static func createWithoutData(id: Int) -> WarpObject
     
-    init(className: String)
-}
-
-extension WarpObjectProtocol where Self: WarpObject {
     
 }
 
