@@ -90,13 +90,29 @@ extension Warp {
 
 public typealias WarpResultBlock = (Bool, WarpError?) -> Void
 
+public protocol WarpObjectProtocol {
+//    static func defaultClassType()
     
+//    /// This will store the table name of the object /classes/<objectClassName>
+//    var objectClassName: String { get }
+//    
+//    /// this will store the JSON data of the object
+//    var dictionary: [String: Any] { get set}
     
+    /// creates an object without Data
+    static func createWithoutData(id: Int, className: String) -> Warp.Object
     
+    /// getter for object keys
     func get(object forKey: String) -> Any?
+    
+    /// setter for object keys
     func set(object value: Any, forKey: String) -> Self
     
+    /// This function is used to update/create the object from the API Server
+    func save(_ completion: @escaping WarpResultBlock) -> WarpDataRequest
     
+    /// This function is used to remove the object from the API Server
+    func destroy(_ completion: @escaping WarpResultBlock) -> WarpDataRequest 
 }
 
 
