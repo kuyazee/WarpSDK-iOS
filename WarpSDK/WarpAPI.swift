@@ -34,11 +34,20 @@ public extension Warp.API {
 }
 
 public extension WarpDataRequest {
-    func warpResponse(_ block: @escaping (_ warpResult: WarpResult) -> Void) -> WarpDataRequest {
+    public func warpResponse(_ block: @escaping (_ warpResult: WarpResult) -> Void) -> WarpDataRequest {
         return responseJSON(completionHandler: { block(WarpTools.toResult($0)) })
     }
     
-    func promise() -> Promise<Any> {
-        return self.responseJSON()
+    public func promise() -> Promise<WarpJSON> {
+        return Promise { fulfill, reject in
+            self.responseJSON { (response) in
+                switch response.result {
+                case .success(let value):
+                    fulfill(WarpJSON(value))
+                case .failure(let error):
+                    reject(error)
+                }
+            }
+        }
     }
 }
