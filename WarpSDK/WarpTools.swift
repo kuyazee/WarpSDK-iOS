@@ -32,7 +32,7 @@ open class WarpTools {
     
     open static func dateFormatter() -> DateFormatter {
         let formatter = DateFormatter()
-        formatter.dateFormat = dateFormat
+        formatter.dateFormat = self.dateFormat
         formatter.dateStyle = DateFormatter.Style.medium
         formatter.timeZone = TimeZone(identifier: "UTC")
         return formatter
