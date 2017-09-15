@@ -7,9 +7,13 @@
 //
 
 import Foundation
+import PromiseKit
 
 public extension Warp {
     public class Query <Class> where Class: Warp.Object {
+        public typealias SingleResultQueryBlock =  (_ warpObject: Class?, _ error: WarpError?) -> Void
+        public typealias MultiResultQueryBlock =  (_ warpObjects: [Class]?, _ error: WarpError?) -> Void
+        
         fileprivate let className: String
         fileprivate var queryParameters: Warp.QueryBuilder.Parameters = Warp.QueryBuilder.Parameters()
         fileprivate var queryBuilder: Warp.QueryBuilder {
@@ -52,7 +56,7 @@ public extension Warp.Object {
 
 // MARK: - Warp.Object where Class: Warp.Object
 public extension Warp.Query where Class: Warp.Object {
-    public func get(_ objectId: Int, completion: @escaping (_ warpObject: Class?, _ error: WarpError?) -> Void) {
+    public func get(_ objectId: Int, completion: @escaping SingleResultQueryBlock) -> WarpDataRequest {
         
         guard let warp = Warp.shared else {
             fatalError("WarpServer is not yet initialized")
@@ -62,7 +66,7 @@ public extension Warp.Query where Class: Warp.Object {
         
         let request = Warp.API.get(endPoint, parameters: self.queryBuilder.dictionary, headers: warp.HEADER())
         
-        _ = request.warpResponse { (warpResult) in
+        return request.warpResponse { (warpResult) in
             switch warpResult {
             case .success(let JSON):
                 let warpResponse = WarpResponse(json: JSON, result: [String: Any].self)
@@ -78,7 +82,7 @@ public extension Warp.Query where Class: Warp.Object {
         }
     }
     
-    public func find(_ completion: @escaping (_ warpObjects: [Class]?, _ error: WarpError?) -> Void) {
+    public func find(_ completion: @escaping MultiResultQueryBlock) -> WarpDataRequest {
         guard let warp = Warp.shared else {
             fatalError("WarpServer is not yet initialized")
         }
@@ -87,7 +91,7 @@ public extension Warp.Query where Class: Warp.Object {
         
         let request = Warp.API.get(endPoint, parameters: self.queryBuilder.dictionary, headers: warp.HEADER())
         
-        _ = request.warpResponse { (warpResult) in
+        return request.warpResponse { (warpResult) in
             switch warpResult {
             case .success(let JSON):
                 
@@ -105,16 +109,52 @@ public extension Warp.Query where Class: Warp.Object {
         }
     }
     
-    public func first(_ completion: @escaping (_ warpObject: Class?, _ error: WarpError?) -> Void) {
-        self.limit(1).find { (warpObjects, error) in
+    public func first(_ completion: @escaping SingleResultQueryBlock) -> WarpDataRequest {
+        return self.limit(1).find { (warpObjects, error) in
             completion(warpObjects?.first, error)
+        }
+    }
+    
+    public func find() -> Promise<[Class]?> {
+        return Promise { fulfill, reject in
+            _ = self.find({ (result, error) in
+                if let error = error {
+                    reject(error)
+                } else {
+                    fulfill(result)
+                }
+            })
+        }
+    }
+    
+    public func get(_ objectId: Int) -> Promise<Class?> {
+        return Promise { fulfill, reject in
+            _ = self.get(objectId, completion: { (result, error) in
+                if let error = error {
+                    reject(error)
+                } else {
+                    fulfill(result)
+                }
+            })
+        }
+    }
+    
+    public func first() -> Promise<Class?> {
+        return Promise { fulfill, reject in
+            _ = self.first({ (result, error) in
+                if let error = error {
+                    reject(error)
+                } else {
+                    fulfill(result)
+                }
+            })
         }
     }
 }
 
 // MARK: - Warp.Query where Class: Warp.User
 public extension Warp.Query where Class: Warp.User {
-    public func get(_ objectId: Int, completion: @escaping (_ warpObject: Class?, _ error: WarpError?) -> Void) {
+    public func get(_ objectId: Int, completion: @escaping SingleResultQueryBlock) -> WarpDataRequest {
         
         guard let warp = Warp.shared else {
             fatalError("WarpServer is not yet initialized")
@@ -124,7 +164,7 @@ public extension Warp.Query where Class: Warp.User {
         
         let request = Warp.API.get(endPoint, parameters: self.queryBuilder.dictionary, headers: warp.HEADER())
         
-        _ = request.warpResponse { (warpResult) in
+        return request.warpResponse { (warpResult) in
             switch warpResult {
             case .success(let JSON):
                 let warpResponse = WarpResponse(json: JSON, result: [String: Any].self)
@@ -140,7 +180,7 @@ public extension Warp.Query where Class: Warp.User {
         }
     }
     
-    public func find(_ completion: @escaping (_ warpObjects: [Class]?, _ error: WarpError?) -> Void) {
+    public func find(_ completion: @escaping MultiResultQueryBlock) -> WarpDataRequest {
         guard let warp = Warp.shared else {
             fatalError("WarpServer is not yet initialized")
         }
@@ -149,7 +189,7 @@ public extension Warp.Query where Class: Warp.User {
         
         let request = Warp.API.get(endPoint, parameters: self.queryBuilder.dictionary, headers: warp.HEADER())
         
-        _ = request.warpResponse { (warpResult) in
+        return request.warpResponse { (warpResult) in
             switch warpResult {
             case .success(let JSON):
                 
@@ -167,16 +207,48 @@ public extension Warp.Query where Class: Warp.User {
         }
     }
     
-    public func first(_ completion: @escaping (_ warpObject: Class?, _ error: WarpError?) -> Void) {
-        self.limit(1).find { (warpObjects, error) in
+    public func first(_ completion: @escaping SingleResultQueryBlock) -> WarpDataRequest {
+        return self.limit(1).find { (warpObjects, error) in
             completion(warpObjects?.first, error)
         }
     }
+    
+    public func find() -> Promise<[Class]?> {
+        return Promise { fulfill, reject in
+            _ = self.find({ (result, error) in
+                if let error = error {
+                    reject(error)
+                } else {
+                    fulfill(result)
+                }
+            })
+        }
+    }
+    
+    public func get(_ objectId: Int) -> Promise<Class?> {
+        return Promise { fulfill, reject in
+            _ = self.get(objectId, completion: { (result, error) in
+                if let error = error {
+                    reject(error)
+                } else {
+                    fulfill(result)
+                }
+            })
+        }
+    }
+    
+    public func first() -> Promise<Class?> {
+        return Promise { fulfill, reject in
+            _ = self.first({ (result, error) in
+                if let error = error {
+                    reject(error)
+                } else {
+                    fulfill(result)
+                }
+            })
+        }
+    }
 
-}
-
-// MARK: - Fetch Functions
-public extension Warp.Query {
 }
 
 // MARK: - Query Functions
