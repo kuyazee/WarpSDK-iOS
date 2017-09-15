@@ -10,9 +10,11 @@ import Foundation
 
 public extension Warp {
     public class Query <Class> where Class: Warp.Object {
-        fileprivate var queryConstraints: [WarpQueryConstraint] = []
-        fileprivate var queryBuilder: WarpQueryBuilder = WarpQueryBuilder()
         fileprivate let className: String
+        fileprivate var queryParameters: Warp.QueryBuilder.Parameters = Warp.QueryBuilder.Parameters()
+        fileprivate var queryBuilder: Warp.QueryBuilder {
+            return Warp.QueryBuilder(parameters: self.queryParameters)
+        }
         
         init(className: String) {
             self.className = className
@@ -58,7 +60,7 @@ public extension Warp.Query where Class: Warp.Object {
         
         let endPoint: String = warp.generateEndpoint(.classes(className: self.className, id: objectId))
         
-        let request = Warp.API.get(endPoint, parameters: queryBuilder.query(queryConstraints).param, headers: warp.HEADER())
+        let request = Warp.API.get(endPoint, parameters: self.queryBuilder.dictionary, headers: warp.HEADER())
         
         _ = request.warpResponse { (warpResult) in
             switch warpResult {
@@ -83,7 +85,7 @@ public extension Warp.Query where Class: Warp.Object {
         
         let endPoint: String = warp.generateEndpoint(.classes(className: self.className, id: nil))
         
-        let request = Warp.API.get(endPoint, parameters: queryBuilder.query(queryConstraints).param, headers: warp.HEADER())
+        let request = Warp.API.get(endPoint, parameters: self.queryBuilder.dictionary, headers: warp.HEADER())
         
         _ = request.warpResponse { (warpResult) in
             switch warpResult {
@@ -120,7 +122,7 @@ public extension Warp.Query where Class: Warp.User {
         
         let endPoint: String = warp.generateEndpoint(.users(id: objectId))
         
-        let request = Warp.API.get(endPoint, parameters: queryBuilder.query(queryConstraints).param, headers: warp.HEADER())
+        let request = Warp.API.get(endPoint, parameters: self.queryBuilder.dictionary, headers: warp.HEADER())
         
         _ = request.warpResponse { (warpResult) in
             switch warpResult {
@@ -145,7 +147,7 @@ public extension Warp.Query where Class: Warp.User {
         
         let endPoint: String = warp.generateEndpoint(.users(id: nil))
         
-        let request = Warp.API.get(endPoint, parameters: queryBuilder.query(queryConstraints).param, headers: warp.HEADER())
+        let request = Warp.API.get(endPoint, parameters: self.queryBuilder.dictionary, headers: warp.HEADER())
         
         _ = request.warpResponse { (warpResult) in
             switch warpResult {
@@ -180,99 +182,108 @@ public extension Warp.Query {
 // MARK: - Query Functions
 public extension Warp.Query {
     public func limit(_ value: Int) -> Warp.Query<Class> {
-        self.queryBuilder.param["limit"] = value
+        self.queryParameters.limit = value
         return self
     }
     
     public func skip(_ value: Int) -> Warp.Query<Class> {
-        self.queryBuilder.param["skip"] = value
+        self.queryParameters.skip = value
         return self
     }
     
     public func include(_ values: String...) -> Warp.Query<Class> {
-        self.queryBuilder.param["include"] = String(describing: values) as Any?
+        self.queryParameters.include = values
         return self
     }
     
     public func sort(_ values: WarpSort...) -> Warp.Query<Class> {
-        var string: String = ""
-        values.enumerated().forEach { (i, value) in
-            string = string + "{\"\(value.key)\": \(value.order.rawValue)}"
-            if values.count > 1 && i != values.count - 1 {
-                string = string + ", "
-            }
-        }
-        self.queryBuilder.param["sort"] = "[\(string)]"
+        self.queryParameters.sort = values
         return self
     }
     
+    
     public func equalTo(_ value: Any, forKey key: String) -> Warp.Query<Class> {
-        self.queryConstraints.append(WarpQueryConstraint(equalTo: value, key: key))
+        self.queryParameters.where.append(Warp.QueryBuilder.Constraint(equalTo: value, key: key))
         return self
     }
     
     public func notEqualTo(_ value: Any, forKey key: String) -> Warp.Query<Class> {
-        self.queryConstraints.append(WarpQueryConstraint(notEqualTo: value, key: key))
-        return self
-    }
-    
-    public func lessThan(_ value: Any, forKey key: String) -> Warp.Query<Class> {
-        self.queryConstraints.append(WarpQueryConstraint(lessThan: value, key: key))
-        return self
-    }
-    
-    public func lessThanOrEqualTo(_ value: Any, forKey key: String) -> Warp.Query<Class> {
-        self.queryConstraints.append(WarpQueryConstraint(lessThanOrEqualTo: value, key: key))
-        return self
-    }
-    
-    public func greaterThanOrEqualTo(_ value: Any, forKey key: String) -> Warp.Query<Class> {
-        self.queryConstraints.append(WarpQueryConstraint(greaterThanOrEqualTo: value, key: key))
+        self.queryParameters.where.append(Warp.QueryBuilder.Constraint(notEqualTo: value, key: key))
         return self
     }
     
     public func greaterThan(_ value: Any, forKey key: String) -> Warp.Query<Class> {
-        self.queryConstraints.append(WarpQueryConstraint(greaterThan: value, key: key))
+        self.queryParameters.where.append(Warp.QueryBuilder.Constraint(greaterThan: value, key: key))
+        return self
+    }
+    
+    public func greaterThanOrEqualTo(_ value: Any, forKey key: String) -> Warp.Query<Class> {
+        self.queryParameters.where.append(Warp.QueryBuilder.Constraint(greaterThanOrEqualTo: value, key: key))
+        return self
+    }
+    
+    public func lessThan(_ value: Any, forKey key: String) -> Warp.Query<Class> {
+        self.queryParameters.where.append(Warp.QueryBuilder.Constraint(lessThan: value, key: key))
+        return self
+    }
+    
+    public func lessThanOrEqualTo(_ value: Any, forKey key: String) -> Warp.Query<Class> {
+        self.queryParameters.where.append(Warp.QueryBuilder.Constraint(lessThanOrEqualTo: value, key: key))
         return self
     }
     
     public func existsKey(_ key: String) -> Warp.Query<Class> {
-        self.queryConstraints.append(WarpQueryConstraint(existsKey: key))
+        self.queryParameters.where.append(Warp.QueryBuilder.Constraint(existsKey: key))
         return self
     }
     
     public func notExistsKey(_ key: String) -> Warp.Query<Class> {
-        self.queryConstraints.append(WarpQueryConstraint(notExistsKey: key))
+        self.queryParameters.where.append(Warp.QueryBuilder.Constraint(notExistsKey: key))
         return self
     }
     
     public func containedIn(_ values: Any..., forKey key: String) -> Warp.Query<Class> {
-        self.queryConstraints.append(WarpQueryConstraint(containedIn: values, key: key))
+        self.queryParameters.where.append(Warp.QueryBuilder.Constraint(containedIn: values, key: key))
         return self
     }
     
-    public func notContainedIn(_ values:[Any], forKey key: String) -> Warp.Query<Class> {
-        self.queryConstraints.append(WarpQueryConstraint(notContainedIn: values, key: key))
+    public func notContainedIn(_ values: [Any], forKey key: String) -> Warp.Query<Class> {
+        self.queryParameters.where.append(Warp.QueryBuilder.Constraint(notContainedIn: values, key: key))
+        return self
+    }
+    
+    public func containedInOrDoesNotExist(_ values: [Any], key: String) -> Warp.Query<Class> {
+        self.queryParameters.where.append(Warp.QueryBuilder.Constraint(containedInOrDoesNotExist: values, key: key))
         return self
     }
     
     public func startsWith(_ value: String, forKey key: String) -> Warp.Query<Class> {
-        self.queryConstraints.append(WarpQueryConstraint(startsWith: value, key: key))
+        self.queryParameters.where.append(Warp.QueryBuilder.Constraint(startsWith: value, key: key))
         return self
     }
     
     public func endsWith(_ value: String, forKey key: String) -> Warp.Query<Class> {
-        self.queryConstraints.append(WarpQueryConstraint(endsWith: value, key: key))
+        self.queryParameters.where.append(Warp.QueryBuilder.Constraint(endsWith: value, key: key))
         return self
     }
     
     public func contains(_ value: String, forKey key: String) -> Warp.Query<Class> {
-        self.queryConstraints.append(WarpQueryConstraint(contains: value, key: key))
+        self.queryParameters.where.append(Warp.QueryBuilder.Constraint(contains: value, key: key))
         return self
     }
     
     public func contains(_ value: String, keys: String...) -> Warp.Query<Class> {
-        self.queryConstraints.append(WarpQueryConstraint(contains: value, keys: keys))
+        self.queryParameters.where.append(Warp.QueryBuilder.Constraint(contains: value, keys: keys))
+        return self
+    }
+    
+    public func containsEitherStrings(_ values: [String], forKey key: String) -> Warp.Query<Class> {
+        self.queryParameters.where.append(Warp.QueryBuilder.Constraint(containsEither: values, key: key))
+        return self
+    }
+    
+    public func containsAllStrings(_ values: [String], forKey key: String) -> Warp.Query<Class> {
+        self.queryParameters.where.append(Warp.QueryBuilder.Constraint.init(containsAll: values, key: key))
         return self
     }
 }
