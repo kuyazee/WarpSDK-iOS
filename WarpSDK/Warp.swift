@@ -39,7 +39,7 @@ open class Warp {
         return [
             WarpHeaderKeys.APIKey.rawValue      : API_KEY,
             WarpHeaderKeys.ContentType.rawValue : WarpTools.CONTENT_TYPE,
-            WarpHeaderKeys.Session.rawValue     : WarpUser.current() == nil ? "" : WarpUser.current()!.sessionToken,
+            WarpHeaderKeys.Session.rawValue     : Warp.User.current() == nil ? "" : Warp.User.current()!.sessionToken,
             WarpHeaderKeys.Client.rawValue      : "ios",
             WarpHeaderKeys.WarpVersion.rawValue : "0.0.2",
             WarpHeaderKeys.AppVersion.rawValue  : (Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String) ?? "0.0.0"
