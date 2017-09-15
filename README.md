@@ -72,10 +72,10 @@ These keys are specifically set by the server and cannot be modified by the user
 
 ### Saving Objects
 
-To save an Object for a specific model, use the `WarpObject` class:
+To save an Object for a specific model, use the `Warp.Object` class:
 
 ```Swift
-let alien = WarpObject(className: "alien")
+let alien = Warp.Object(className: "alien")
 ```
 
 You can set the values of the Object's keys using the `.set(object: value: AnyObject, forKey: String)` method:
@@ -93,14 +93,23 @@ alien.save()
 
 // or 
 
-alien.save { (success, error) in
+alien.save { (isSucess, error) in
     if error != nil {
         print(error)
     } else {
-        print("The alien has been created with the following ID:", alien.objectId)
+        print("The alien has been created with the following ID:", alien.id)
         print("The alien has been named:", alien.get(object: "name"))
     }
 }
+
+// or 
+
+_ = alien.save().promise().then { _ in
+    print("The alien has been created with the following ID:", alien.id)
+    print("The alien has been named:", alien.get(object: "name"))
+}.catch(execute: { (error) in
+    print(error)
+})
 ```
 
 
@@ -109,10 +118,19 @@ alien.save { (success, error) in
 To retrieve an Object for a specific model, you can use `Warp Queries`. For more info, see the section on [Queries](#queries):
 
 ```Swift
-let alienQuery = WarpQuery(className: "alien")
+let alienQuery = Warp.Query(className: "alien")
+// or
+let alienQuery = Warp.ObjectQuery(className: "alien")
+
 alienQuery.equalTo(16, forKey: "id")
 alienQuery.first { (warpObject, error) in
-    // You now have a copy of alien (id: 16) from the database        
+    // You now have a copy of alien (id: 16) from the database
+}
+
+// or
+
+alienQuery.first().then { warpObject in
+    // You now have a copy of alien (id: 16) from the database
 }
 ```
 
@@ -127,7 +145,7 @@ let type = alien.get(object: "type")
 For special keys as mentioned in the section on [Objects](#objects), you can retrieve their values via the following properties:
 
 ```Swift
-var id = alien.objectId
+var id = alien.id
 var createdAt = alien.createdAt
 var updatedAt = alien.updatedAt
 ```
@@ -142,39 +160,68 @@ Whenever you use `.save()` or `Warp Queries` to save/retrieve objects, you can m
 For example, after the `.save()` method:
 
 ```Swift
-let alien = WarpObject(className: "alien")
+let alien = Warp.Object(className: "alien")
 alien.set(object: "Madam Vestra", forKey: "name")
 alien.set(object: 4, forKey: "type")
 
-alien.save { (success, error) in
+alien.save { (isSucess, error) in
     // If this is the 200th alien, change its type, for example
-    if alien.objectId > 200 {
+    if alien.id > 200 {
         alien.set(object: 5, forKey: "type")
     }
 
     // Update the alien
-    alien.save { (success, error) in
+    alien.save { (isSucess, error) in
         // The alien has been successfully updated
     }
+}
+
+
+// or
+
+alien.save().promise().then { _ in
+    // If this is the 200th alien, change its type, for example
+    if alien.id > 200 {
+        alien.set(object: 5, forKey: "type")
+    }
+
+    // Update the alien
+    return alien.save().promise()
+}.then { _ in
+    // The alien has been successfully updated
 }
 ```
 
 For example, after retrieving from `Warp Queries`:
 
 ```Swift
-let alienQuery = WarpQuery(className: "alien")
+let alienQuery = Warp.Query(className: "alien")
+// or
+let alienQuery = Warp.ObjectQuery(className: "alien")
 alienQuery.equalTo(5, forKey: "id")
 
-alienQuery.first { (warpObject, error) in
-    alien.set(object: 5, forKey: "age")
+alienQuery.first { (alien, error) in
+    alien?.set(object: 5, forKey: "age")
 
-    alien.save { (success, error) in
+    alien?.save { (isSucess, error) in
         // The alien has been successfully updated
     }
+}
+
+// or
+
+alienQuery.first().then { alien in
+    alien?.set(object: 30, forKey: "age")
+
+    return alien?.save()
+}.then { _ in
+    // The alien has been successfully updated
 }
 ```
 
 Additionally, if the key you are trying to update is an `integer` and you want to atomically increase or decrease its value, you can opt to use the `.increment()` method instead.
+
+**COMING SOON**
 
 ### Deleting Objects
 
@@ -182,12 +229,21 @@ If you want to delete a saved or retrieved object, all you need to do is call th
 
 ```Swift
 alien.destroy()
+```
+
+Additionally, like `.save()`, the `.destroy()` method also returns a promise, which you can chain other processes to:
+
+```Swift
+alien.destroy { (isSucess, error) in
+    print("The alien has been destroyed")            
+}
 
 // or
 
-alien.destroy { (success, error) in
-print("The alien has been destroyed")            
+alien.destroy().promise().then { _ in
+    print("The alien has been destroyed")
 }
+
 ```
 
 
@@ -198,28 +254,49 @@ If your objects use [pointers](https://github.com/dividedbyzeroco/warp-server#po
 For example, if you are creating a `planet` for an `alien` object, you can use the following approach:
 
 ```Swift
-planet.save { (success, error) in
-    let alien = WarpObject(className: "alien")
+let planet = Warp.Object(className: "planet")
+planet.set(object: "Raxocoricofallipatorius", forKey: "name") 
+
+planet.save { (isSucess, error) in
+    let alien = Warp.Object(className: "alien")
     alien.set(object: "Slitheen", forKey: "name")
     alien.set(object: planet, forKey: "planet")
 
-    alien.save { (success, error) in
+    alien.save { (isSucess, error) in
         // The alien has been successfully saved
     }
+}
+
+// or
+
+planet.save().promise().then { _ in 
+    let alien = Warp.Object(className: "alien")
+    alien.set(object: "Slitheen", forKey: "name")
+    alien.set(object: planet, forKey: "planet")
+
+    return alien.save().promise()
+}.then { _ in {
+    // The alien has been successfully saved
 }
 ```
 
 If, for example, you have an existing `planet` and you want to use it for an `alien` object, you can use the following approach:
 
 ```Swift
-// For Objects, WarpObject.createWithoutData(id: Int, className: String)
-// For users, WarpUser.createWithoutData(id: Int)
-let planet = WarpObject.createWithoutData(id: 2, className: "planet")
-let alien = WarpObject(className: "alien")
-alien.set('name', 'Captain Jack Harkness');
-alien.set('planet', planet); // Set the object directly
+// For Objects, Warp.Object.createWithoutData(id: Int, className: String)
+// For users, Warp.User.createWithoutData(id: Int)
+let planet = Warp.Object.createWithoutData(id: 2, className: "planet")
+let alien = Warp.Object(className: "alien")
+alien.set(object: "Captain Jack Harkness", forKey: "name")
+alien.set(object: planet, forKey: "planet")
 
-alien.save { (success, error) in
+alien.save { (isSucess, error) in
+    // The alien has been successfully saved
+}
+
+// or
+
+alien.save().promise().then { _ in
     // The alien has been successfully saved
 }
 ```
@@ -232,17 +309,45 @@ For example, if you want to query objects from the `alien` model, you would use 
 
 ```Swift
 // Prepare query
-let alienQuery = WarpQuery(className: "alien")
+let alienQuery = Warp.Query(className: "alien")
+// or
+let alienQuery = Warp.ObjectQuery(className: "alien")
 
 // Use `.find()` to get all the objects in the `alien` table
 alienQuery.find { (aliens, error) in
-// You now have a collection of all the aliens        
+    // You now have a collection of all the aliens        
 }
+
+// or
+
+alienQuery.find().then { aliens in
+    // You now have a collection of all the aliens
+}
+
 
 // Use `.first()` to get the first object in the `alien` table
 alienQuery.first { (alien, error) in
-// You now have the first alien object            
+    // You now have the first alien object            
 }
+
+// or 
+
+alienQuery.first().then { alien in 
+    // You now have the first alien object
+}
+
+// Use `.get(_ objectId: Int)` to get a specific object in the `alien` table
+let alienQuery = Warp.Query(className: "alien")
+alienQuery.get(3) { (object, error) in
+    // You now have the object with the id 3
+}
+
+// or
+
+alienQuery.get(3).then { (object) in
+    // You now have the object with the id 3
+}
+
 ```
 
 ### Constraints
@@ -341,7 +446,7 @@ userQuery.equalTo(5, forKey: "id").first { (user, error) in
     if let unwrappedError = error {
         print(unwrappedError)
     } else {
-        var id = user?.objectId
+        var id = user?.id
         var createdAt = user?.createdAt
         var updatedAt = user?.updatedAt
         var username = user?.username
@@ -355,10 +460,10 @@ Note that for User Queries, instead of using `WarpQuery(className: "user")` we s
 
 ### Logging In
 
-In order to log in to a user account, you would use the `.login(username: String, password: String, completion: { (success, error) in })` method:
+In order to log in to a user account, you would use the `.login(username: String, password: String, completion: { (isSucess, error) in })` method:
 
 ```Swift
-WarpUser().login("username", password: "password") { (success, error) in
+WarpUser().login("username", password: "password") { (isSucess, error) in
     if error != nil {
         // Successfully logged in
     } else {
@@ -378,14 +483,14 @@ var current = WarpUser.current()
 
 ### Signing Up
 
-To register a new user account, you would use the `.signUp({ (success, error) in })` method:
+To register a new user account, you would use the `.signUp({ (isSucess, error) in })` method:
 
 ```Swift
 let user = WarpUser()
 user.setUsername("Luke Smith")
 user.setPassword("k9_and_sara")
 
-user.signUp { (success, error) in
+user.signUp { (isSucess, error) in
     if error != nil {
         // Signed up; `.current()` returns the registered user
         let current = WarpUser.current()
@@ -403,7 +508,7 @@ Note that you cannot use `.save()` to create a user. You can only use `.save()` 
 To log out of a user account, you would use the `.logOut()` method:
 
 ```Swift
-user.logout { (success, error) in
+user.logout { (isSucess, error) in
     if error != nil {
         // Logged out; `.current()` now returns nil
         var current = WarpUser.current()
