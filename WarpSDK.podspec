@@ -14,8 +14,8 @@ Pod::Spec.new do |s|
   s.source       = { :git => "https://github.com/kuyazee/WarpSDK-iOS.git", :tag => "#{s.version}" }
   s.source_files  = "WarpSDK", "WarpSDK/**/*.{h,swift}"
 
-  s.dependency "Alamofire", "~> 4.3"
-  s.dependency "EVReflection", "~> 4.2.0"
-  s.dependency "SwiftyJSON", "~> 3.1.4"
+  s.dependency "Alamofire", "4.4.0"
+  s.dependency "EVReflection", "4.2.0"
+  s.dependency "SwiftyJSON", "3.1.4"
 
 end
