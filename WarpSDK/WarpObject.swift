@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import PromiseKit
 
 public extension Warp {
     public class Object: WarpObjectProtocol {
@@ -68,7 +69,7 @@ public extension Warp {
             return self.dictionary[forKey]
         }
         
-        public func save(_ completion: @escaping WarpResultBlock = ({ _, _ in })) -> WarpDataRequest {
+        public func save(_ completion: @escaping WarpResultBlock) -> WarpDataRequest {
             guard let warp = Warp.shared else {
                 fatalError("[Warp] WarpServer is not yet initialized")
             }
@@ -107,7 +108,7 @@ public extension Warp {
             }
         }
         
-        public func destroy(_ completion: @escaping WarpResultBlock = ({ _, _ in })) -> WarpDataRequest {
+        public func destroy(_ completion: @escaping WarpResultBlock) -> WarpDataRequest {
             guard let warp = Warp.shared else {
                 fatalError("WarpServer is not yet initialized")
             }
@@ -135,6 +136,30 @@ public extension Warp {
                 case .failure(let error):
                     completion(false, error)
                 }
+            }
+        }
+        
+        public func save() -> Promise<Warp.Object> {
+            return Promise { fulfill, reject in
+                _ = self.save({ (isSuccess, error) in
+                    if let error = error {
+                        reject(error)
+                    } else {
+                        fulfill(self)
+                    }
+                })
+            }
+        }
+        
+        public func destroy() -> Promise<Warp.Object> {
+            return Promise { fulfill, reject in
+                _ = self.destroy({ (isSuccess, error) in
+                    if let error = error {
+                        reject(error)
+                    } else {
+                        fulfill(self)
+                    }
+                })
             }
         }
     }
