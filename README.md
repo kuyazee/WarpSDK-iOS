@@ -63,7 +63,7 @@ Objects represent individual instances of models. In terms of the database, an O
 
 Each Object contains different keys which can be set or retrieved as needed. Among these keys are three special ones:
 
-- objectId: a unique identifier that distinguishes an object inside a table
+- id: a unique identifier that distinguishes an object inside a table
 - createdAt: a timestamp that records the date and time when a particular object was created (UTC)
 - updatedAt: a timestamp that records the date and time when a particular object was last modified (UTC)
 
