@@ -20,10 +20,10 @@ public extension Warp {
             return Warp.QueryBuilder(parameters: self.queryParameters)
         }
         
-        init(className: String) {
         /// Description
         ///
         /// - Parameter className: creates a Warp.Query<Warp.Object> instance
+        public init(className: String) {
             self.className = className
         }
         

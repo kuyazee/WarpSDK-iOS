@@ -66,11 +66,10 @@ open class WarpModel: EVObject, WarpModelProtocol {
     /// - Parameter id: the object's id
     /// - Returns: the full url endpoint of the WarpServer
     public static func endPoint() -> String {
-        guard let endpoint = sharedEndpoint else {
-            fatalError("class not yet registered")
+        guard let endpoint = self.sharedEndpoint else {
             fatalError("[Warp] class not yet registered")
         }
-        return "\(endpoint)\(className())/"
+        return "\(endpoint)\(self.objectClassName())/"
     }
     
     /// This will return the full url endpoint of the WarpServer including the Object's id
@@ -78,7 +77,7 @@ open class WarpModel: EVObject, WarpModelProtocol {
     /// - Parameter id: the object's id
     /// - Returns: the full url endpoint of the WarpServer including the Object's id
     public class func endPoint(_ id: Int) -> String {
-        return "\(endPoint())\(id)"
+        return "\(self.endPoint())\(id)"
     }
     
     open func map() -> [String : Any] {
