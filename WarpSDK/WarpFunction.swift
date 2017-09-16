@@ -14,7 +14,7 @@ open class WarpFunction {
     
     open static func run(_ functionName: String, parameters: [String: Any]?, completion: @escaping (_ result: Any?, _ error: WarpError?) -> Void) {
         guard let warp = Warp.shared else {
-            fatalError("WarpServer is not yet initialized")
+            fatalError("[Warp] WarpServer is not yet initialized")
         }
         
         let _ = Warp.API.post(warp.generateEndpoint(.functions(endpoint: functionName)), parameters: parameters, headers: warp.HEADER()).warpResponse { (warpResult) in

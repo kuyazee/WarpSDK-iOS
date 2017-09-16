@@ -62,7 +62,7 @@ public extension Warp.Query where Class: Warp.Object {
     public func get(_ objectId: Int, completion: @escaping SingleResultQueryBlock) -> WarpDataRequest {
         
         guard let warp = Warp.shared else {
-            fatalError("WarpServer is not yet initialized")
+            fatalError("[Warp] WarpServer is not yet initialized")
         }
         
         let endPoint: String = warp.generateEndpoint(.classes(className: self.className, id: objectId))
@@ -87,7 +87,7 @@ public extension Warp.Query where Class: Warp.Object {
     
     public func find(_ completion: @escaping MultiResultQueryBlock) -> WarpDataRequest {
         guard let warp = Warp.shared else {
-            fatalError("WarpServer is not yet initialized")
+            fatalError("[Warp] WarpServer is not yet initialized")
         }
         
         let endPoint: String = warp.generateEndpoint(.classes(className: self.className, id: nil))
@@ -160,7 +160,7 @@ public extension Warp.Query where Class: Warp.User {
     public func get(_ objectId: Int, completion: @escaping SingleResultQueryBlock) -> WarpDataRequest {
         
         guard let warp = Warp.shared else {
-            fatalError("WarpServer is not yet initialized")
+            fatalError("[Warp] WarpServer is not yet initialized")
         }
         
         let endPoint: String = warp.generateEndpoint(.users(id: objectId))
@@ -185,7 +185,7 @@ public extension Warp.Query where Class: Warp.User {
     
     public func find(_ completion: @escaping MultiResultQueryBlock) -> WarpDataRequest {
         guard let warp = Warp.shared else {
-            fatalError("WarpServer is not yet initialized")
+            fatalError("[Warp] WarpServer is not yet initialized")
         }
         
         let endPoint: String = warp.generateEndpoint(.users(id: nil))

@@ -35,7 +35,6 @@ open class Warp {
     }
     
     func HEADER() -> [String: String] {
-        
         return [
             WarpHeaderKeys.APIKey.rawValue      : API_KEY,
             WarpHeaderKeys.ContentType.rawValue : WarpTools.CONTENT_TYPE,

@@ -95,7 +95,7 @@ public extension Warp {
         
         public func save(_ completion: @escaping WarpResultBlock) -> WarpDataRequest {
             guard let warp = Warp.shared else {
-                fatalError("[Warp] WarpServer is not yet initialized")
+                fatalError("[Warp] [Warp] WarpServer is not yet initialized")
             }
             
             let endPoint: String = {
@@ -134,7 +134,7 @@ public extension Warp {
         
         public func destroy(_ completion: @escaping WarpResultBlock) -> WarpDataRequest {
             guard let warp = Warp.shared else {
-                fatalError("WarpServer is not yet initialized")
+                fatalError("[Warp] WarpServer is not yet initialized")
             }
             
             let endPoint = warp.generateEndpoint(.classes(className: self.objectClassName, id: self.id))

@@ -68,6 +68,7 @@ open class WarpModel: EVObject, WarpModelProtocol {
     public static func endPoint() -> String {
         guard let endpoint = sharedEndpoint else {
             fatalError("class not yet registered")
+            fatalError("[Warp] class not yet registered")
         }
         return "\(endpoint)\(className())/"
     }
@@ -88,7 +89,7 @@ open class WarpModel: EVObject, WarpModelProtocol {
 public extension Warp {
     public static func registerModels<T>(_ models: [T.Type]) where T: WarpModelProtocol {
         guard let warp = Warp.shared else {
-            fatalError("WarpServer is not yet initialized")
+            fatalError("[Warp] WarpServer is not yet initialized")
         }
         
         models.forEach { (model) in

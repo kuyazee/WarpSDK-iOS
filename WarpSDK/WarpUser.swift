@@ -58,7 +58,7 @@ public extension Warp {
         
         override public func save(_ completion: @escaping WarpResultBlock = ({ _, _ in })) -> WarpDataRequest {
             guard let warp = Warp.shared else {
-                fatalError("WarpServer is not yet initialized")
+                fatalError("[Warp] WarpServer is not yet initialized")
             }
             
             let endPoint: String = {
@@ -97,7 +97,7 @@ public extension Warp {
         
         override public func destroy(_ completion: @escaping WarpResultBlock = ({ _, _ in })) -> WarpDataRequest {
             guard let warp = Warp.shared else {
-                fatalError("WarpServer is not yet initialized")
+                fatalError("[Warp] WarpServer is not yet initialized")
             }
             
             let endPoint = warp.generateEndpoint(.users(id: self.id))
@@ -155,7 +155,7 @@ extension Warp.User {
 extension Warp.User {
     public func login(_ username: String, password: String, completion: @escaping WarpResultBlock) {
         guard let warp = Warp.shared else {
-            fatalError("WarpServer is not yet initialized")
+            fatalError("[Warp] WarpServer is not yet initialized")
         }
         let endPoint = warp.generateEndpoint(.login)
         
@@ -183,7 +183,7 @@ extension Warp.User {
     
     public func signUp(_ completion: @escaping WarpResultBlock) {
         guard let warp = Warp.shared else {
-            fatalError("WarpServer is not yet initialized")
+            fatalError("[Warp] WarpServer is not yet initialized")
         }
         
         let endPoint = warp.generateEndpoint(.users(id: nil))
@@ -208,7 +208,7 @@ extension Warp.User {
     
     public func logout(_ completion: @escaping WarpResultBlock) {
         guard let warp = Warp.shared else {
-            fatalError("WarpServer is not yet initialized")
+            fatalError("[Warp] WarpServer is not yet initialized")
         }
         
         let endPoint = warp.generateEndpoint(.logout)
