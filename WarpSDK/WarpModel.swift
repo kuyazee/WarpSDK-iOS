@@ -53,9 +53,9 @@ open class WarpModel: EVObject, WarpModelProtocol {
     override open func setValue(_ value: Any?, forUndefinedKey key: String) {
         switch key {
         case "created_at":
-            self.createdAt = value as! String
+            self.createdAt = value as? String ?? ""
         case "updated_at":
-            self.updatedAt = value as! String
+            self.updatedAt = value as? String ?? ""
         default:
             WarpTools.showLog(value, key: key, model: "WarpModel_BaseObject")
         }
