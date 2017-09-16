@@ -11,7 +11,7 @@ import EVReflection
 public protocol WarpModelProtocol {
     
     /** Set the class' endpoint url */
-    static func className() -> String
+    static func objectClassName() -> String
     
     /** This variable is handled by the WarpSDK */
     static var sharedEndpoint: String? { get set }
@@ -28,10 +28,10 @@ open class WarpModel: EVObject, WarpModelProtocol {
     open var createdAt: String = ""
     open var updatedAt: String = ""
     
-    open class func className() -> String {
     /// Set the Database Table name here
     ///
     /// - Returns: Database Table name
+    open class func objectClassName() -> String {
         return ""
     }
     
