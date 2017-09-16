@@ -125,6 +125,10 @@ public extension Warp {
                 }
             }
         }
+        
+        public static func Query() -> Warp.Query<Warp.User> {
+            return Warp.Query<Warp.User>()
+        }
     }
 }
 

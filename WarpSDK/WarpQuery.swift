@@ -45,18 +45,6 @@ public extension Warp {
     }
 }
 
-public extension Warp.User {
-    public static func Query() -> Warp.Query<Warp.User> {
-        return Warp.Query<Warp.User>()
-    }
-}
-
-public extension Warp.Object {
-    public static func Query(className: String) -> Warp.Query<Warp.Object> {
-        return Warp.Query(className: className)
-    }
-}
-
 // MARK: - Warp.Object where Class: Warp.Object
 public extension Warp.Query where Class: Warp.Object {
     public func get(_ objectId: Int, completion: @escaping SingleResultQueryBlock) -> WarpDataRequest {

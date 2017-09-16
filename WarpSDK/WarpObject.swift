@@ -191,5 +191,8 @@ public extension Warp {
         ///
         /// - Parameter className: The Warp.Object's className
         /// - Returns: a new Warp.Query<Warp.Object> instance
+        public static func Query(className: String) -> Warp.Query<Warp.Object> {
+            return Warp.Query(className: className)
+        }
     }
 }
