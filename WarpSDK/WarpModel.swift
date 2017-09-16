@@ -29,9 +29,13 @@ open class WarpModel: EVObject, WarpModelProtocol {
     open var updatedAt: String = ""
     
     open class func className() -> String {
+    /// Set the Database Table name here
+    ///
+    /// - Returns: Database Table name
         return ""
     }
     
+    /// WarpSDK will set the sharedEndpoint when you call Warp.registerSubclass
     public static var sharedEndpoint: String?
     
     convenience public init?(warpJSON: WarpJSON) {
@@ -57,6 +61,10 @@ open class WarpModel: EVObject, WarpModelProtocol {
         }
     }
 
+    /// This will return the full url endpoint of the WarpServer
+    ///
+    /// - Parameter id: the object's id
+    /// - Returns: the full url endpoint of the WarpServer
     public static func endPoint() -> String {
         guard let endpoint = sharedEndpoint else {
             fatalError("class not yet registered")
@@ -64,6 +72,10 @@ open class WarpModel: EVObject, WarpModelProtocol {
         return "\(endpoint)\(className())/"
     }
     
+    /// This will return the full url endpoint of the WarpServer including the Object's id
+    ///
+    /// - Parameter id: the object's id
+    /// - Returns: the full url endpoint of the WarpServer including the Object's id
     public class func endPoint(_ id: Int) -> String {
         return "\(endPoint())\(id)"
     }

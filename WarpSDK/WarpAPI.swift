@@ -38,6 +38,10 @@ public extension WarpDataRequest {
         return responseJSON(completionHandler: { block(WarpTools.toResult($0)) })
     }
     
+    
+    /// then()
+    ///
+    /// - Returns: returns the response.result of a status 200 Warp Call
     public func then() -> Promise<WarpJSON> {
         return Promise { fulfill, reject in
             _ =  self.warpResponse { (response) in

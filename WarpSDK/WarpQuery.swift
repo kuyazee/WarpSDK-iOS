@@ -21,6 +21,9 @@ public extension Warp {
         }
         
         init(className: String) {
+        /// Description
+        ///
+        /// - Parameter className: creates a Warp.Query<Warp.Object> instance
             self.className = className
         }
         

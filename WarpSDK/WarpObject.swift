@@ -29,21 +29,41 @@ public extension Warp {
             return self.dictionary["updated_at"] as? String ?? ""
         }
         
+        /// Description
+        ///
+        /// - Parameters:
+        ///   - id: Database primary key
+        ///   - className: Table name in the Database
+        /// - Returns: A new instance of the object
         public class func createWithoutData(id: Int, className: String = "") -> Warp.Object {
             let object = Warp.Object(className: className)
             object.dictionary["id"] = id
             return object
         }
         
+        /// Description
+        ///
+        /// - Parameter className: Table name in the Database
         public required init(className: String) {
             self.objectClassName = className
         }
         
+        /// Description
+        ///
+        /// - Parameters:
+        ///   - className: Table name in the Database
+        ///   - json: possible table rows
         required public init(className: String, json: [String: Any]) {
             self.objectClassName = className
             self.dictionary = json
         }
         
+        /// This function will be used to set a value to this object
+        ///
+        /// - Parameters:
+        ///   - value: value that will be set to a key
+        ///   - forKey: The key name
+        /// - Returns: The same object but with updated properties
         public func set(object value: Any, forKey: String) -> Self {
             switch forKey {
             case "created_at", "updated_at", "id":
@@ -65,6 +85,10 @@ public extension Warp {
             
         }
         
+        /// This function will be used to take a value from this object
+        ///
+        /// - Parameter forKey: the key name
+        /// - Returns: The value associated to the key
         public func get(object forKey: String) -> Any? {
             return self.dictionary[forKey]
         }
@@ -162,5 +186,10 @@ public extension Warp {
                 })
             }
         }
+        
+        /// Creates a Warp.Query<Warp.Object> instance
+        ///
+        /// - Parameter className: The Warp.Object's className
+        /// - Returns: a new Warp.Query<Warp.Object> instance
     }
 }
