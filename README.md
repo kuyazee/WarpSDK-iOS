@@ -9,7 +9,7 @@ __The Warp iOS SDK__ is available through the dependency manager [CocoaPods](htt
 
 ===================
 
-__The Warp iOS SDK__ is a library built in top of **[Alamofire](https://github.com/Alamofire/Alamofire)**, **[EVReflection](https://github.com/evermeer/EVReflection)**, and **[SwiftyJSON](https://github.com/SwiftyJSON/SwiftyJSON)** for implementing the Warp Framework using Swift. It is designed to work with projects built on-top of the **[Warp Server](http://github.com/dividedbyzeroco/warp-server)**.
+__The Warp iOS SDK__ is a library built in top of **[Alamofire](https://github.com/Alamofire/Alamofire)**, **[EVReflection](https://github.com/evermeer/EVReflection)**, **[SwiftyJSON](https://github.com/SwiftyJSON/SwiftyJSON)**, and [PromiseKit](https://github.com/mxcl/PromiseKit) for implementing the Warp Framework using Swift. It is designed to work with projects built on-top of the **[Warp Server](http://github.com/dividedbyzeroco/warp-server)**.
 
 ## Table of Contents
 - **[Installation](#installation)**  
