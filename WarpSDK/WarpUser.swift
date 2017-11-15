@@ -240,38 +240,38 @@ extension Warp.User {
 
 // MARK: - Persistence
 extension Warp.User {
-    internal func setCurrentUser() {
+    internal func setCurrentUser(warpInstance: Warp? = Warp.shared) {
         var strings: [String] = []
         for key in self.dictionary.keys {
             strings.append(key)
         }
         
-        UserDefaults.standard.set(strings, forKey: "swrxCurrentUserKeys_rbBEAFVAWFBVWW")
+        UserDefaults.standard.set(strings, forKey: "swrxCurrentUserKeys_rbBEAFVAWFBVWW_\((warpInstance?.instanceIdentifier ?? ""))")
         for (key, value) in self.dictionary {
-            UserDefaults.standard.set(value, forKey: "swrxCurrentUser\(key)_9gehrpnvr2pv3r")
+            UserDefaults.standard.set(value, forKey: "swrxCurrentUser\(key)_9gehrpnvr2pv3r_\((warpInstance?.instanceIdentifier ?? ""))")
         }
     }
     
-    public static func current() -> Warp.User? {
+    public static func current(warpInstance: Warp? = Warp.shared) -> Warp.User? {
         let user: Warp.User = Warp.User()
         
-        let keys: [String] = UserDefaults.standard.array(forKey: "swrxCurrentUserKeys_rbBEAFVAWFBVWW") as? [String] ?? []
+        let keys: [String] = UserDefaults.standard.array(forKey: "swrxCurrentUserKeys_rbBEAFVAWFBVWW_\((warpInstance?.instanceIdentifier ?? ""))") as? [String] ?? []
         
         if keys.count == 0 {
             return nil
         }
         
         for key in keys {
-            _ = user.set(object: UserDefaults.standard.object(forKey: "swrxCurrentUser\(key)_9gehrpnvr2pv3r")! as Any, forKey: key)
+            _ = user.set(object: UserDefaults.standard.object(forKey: "swrxCurrentUser\(key)_9gehrpnvr2pv3r_\((warpInstance?.instanceIdentifier ?? ""))")! as Any, forKey: key)
         }
         return user
     }
     
-    public static func deleteCurrent() {
-        UserDefaults.standard.set([], forKey: "swrxCurrentUserKeys_rbBEAFVAWFBVWW")
-        let keys: [String] = UserDefaults.standard.array(forKey: "swrxCurrentUserKeys_rbBEAFVAWFBVWW") as? [String] ?? []
+    public static func deleteCurrent(warpInstance: Warp? = Warp.shared) {
+        UserDefaults.standard.set([], forKey: "swrxCurrentUserKeys_rbBEAFVAWFBVWW_\((warpInstance?.instanceIdentifier ?? ""))")
+        let keys: [String] = UserDefaults.standard.array(forKey: "swrxCurrentUserKeys_rbBEAFVAWFBVWW_\((warpInstance?.instanceIdentifier ?? ""))") as? [String] ?? []
         for key in keys {
-            UserDefaults.standard.set("", forKey: "swrxCurrentUser\(key)_9gehrpnvr2pv3r")
+            UserDefaults.standard.set("", forKey: "swrxCurrentUser\(key)_9gehrpnvr2pv3r_\((warpInstance?.instanceIdentifier ?? ""))")
         }
     }
 }

@@ -28,7 +28,7 @@ open class WarpModel: EVObject, WarpModelProtocol {
     open var createdAt: String = ""
     open var updatedAt: String = ""
     
-    /// Set the Database Table name here
+    /// Set the Database Table name here (need to override this classs)
     ///
     /// - Returns: Database Table name
     open class func objectClassName() -> String {
@@ -86,8 +86,8 @@ open class WarpModel: EVObject, WarpModelProtocol {
 }
 
 public extension Warp {
-    public static func registerModels<T>(_ models: [T.Type]) where T: WarpModelProtocol {
-        guard let warp = Warp.shared else {
+    public static func registerModels<T>(_ models: [T.Type], warpInstance: Warp? = Warp.shared) where T: WarpModelProtocol {
+        guard let warp = warpInstance else {
             fatalError("[Warp] WarpServer is not yet initialized")
         }
         

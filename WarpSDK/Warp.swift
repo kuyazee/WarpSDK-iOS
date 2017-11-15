@@ -7,31 +7,73 @@
 //
 
 import Alamofire
+import UIKit
 
 public typealias WarpRequest = Alamofire.Request
 
 public typealias WarpDataRequest = Alamofire.DataRequest
 
 open class Warp {
+    
+    /// Shared Instance
     static var shared: Warp?
-    var API_ENDPOINT: String
+    
+    /// Different instances for the Warp SDK
+    static var instances: [String: Warp] = [:]
+    
+    /// App Version
     fileprivate var APPLICATION_VERSION: String?
+    
+    /// The endpoint of the Warp Server API
+    var API_ENDPOINT: String
+    
+    /// The Api Key for the Warp Server
     var API_KEY: String
     
-    fileprivate init(baseURL: String, apiKey: String) {
+    /// This will be the name of the instance
+    var instanceIdentifier: String
+    
+    fileprivate init(instanceIdentifier: String, baseURL: String, apiKey: String) {
         
         // TODO: Improve This
         if baseURL.characters.last != "/" {
-            API_ENDPOINT = baseURL + "/"
+            self.API_ENDPOINT = baseURL + "/"
         } else {
-            API_ENDPOINT = baseURL
+            self.API_ENDPOINT = baseURL
         }
         
-        API_KEY = apiKey
+        self.instanceIdentifier = instanceIdentifier
+        self.API_KEY = apiKey
+        
+        Warp.instances[instanceIdentifier] = self
     }
     
+    /// Use this to create the default instance of Warp SDK
+    ///
+    /// - Parameters:
+    ///   - baseURL: api endpoint
+    ///   - apiKey: api key
     open static func Initialize(_ baseURL: String, apiKey: String) {
-        Warp.shared = Warp.init(baseURL: baseURL, apiKey: apiKey)
+        Warp.shared = Warp(instanceIdentifier: "default", baseURL: baseURL, apiKey: apiKey)
+    }
+    
+    /// Use this to create a different instance of Warp SDK
+    ///
+    /// - Parameters:
+    ///   - identifier: identifier for the warp SDK
+    ///   - baseURL: api endpoint
+    ///   - apiKey: api key
+    /// - Returns: Warp SDK Instance
+    open static func Initialize(withIdentifier identifier: String, baseURL: String, apiKey: String) -> Warp {
+        return Warp(instanceIdentifier: identifier, baseURL: baseURL, apiKey: apiKey)
+    }
+    
+    /// Getter function for instances
+    ///
+    /// - Parameter identifier: the name of the instance
+    /// - Returns: Warp SDK Instance if it exists.
+    open static func instance(forIdentifier identifier: String) -> Warp? {
+        return Warp.instances[identifier]
     }
     
     func HEADER() -> [String: String] {
@@ -49,7 +91,7 @@ open class Warp {
 // MARK: - Endpoint Generator
 extension Warp {
     func generateEndpoint(_ type: EndpointType) -> String {
-        var generatedEndpoint = API_ENDPOINT
+        var generatedEndpoint = self.API_ENDPOINT
         
         switch type {
         case .classes(className: let name, id: let id):
@@ -90,21 +132,27 @@ extension Warp {
 public typealias WarpResultBlock = (Bool, WarpError?) -> Void
 
 public protocol WarpObjectProtocol {
-//    static func defaultClassType()
     
-//    /// This will store the table name of the object /classes/<objectClassName>
-//    var objectClassName: String { get }
-//    
-//    /// this will store the JSON data of the object
-//    var dictionary: [String: Any] { get set}
-    
-    /// creates an object without Data
+    /// Creates an object without Data
+    ///
+    /// - Parameters:
+    ///   - id: identifier for the object
+    ///   - className: the class's table name
+    /// - Returns: a new Warp.Object instance
     static func createWithoutData(id: Int, className: String) -> Warp.Object
     
-    /// getter for object keys
+    /// Getter for object keys
+    ///
+    /// - Parameter forKey: dictionary key
+    /// - Returns: value for the key
     func get(object forKey: String) -> Any?
     
-    /// setter for object keys
+    /// Setter for object keys
+    ///
+    /// - Parameters:
+    ///   - value: value to be set for the dictionary
+    ///   - forKey: dictionary key
+    /// - Returns: the instance of this object
     func set(object value: Any, forKey: String) -> Self
     
     /// This function is used to update/create the object from the API Server
@@ -114,7 +162,6 @@ public protocol WarpObjectProtocol {
     func destroy(_ completion: @escaping WarpResultBlock) -> WarpDataRequest 
 }
 
-
 public struct APIResult<T> {
     public var hasFailed: Bool = true
     public var message: String = ""
@@ -122,7 +169,7 @@ public struct APIResult<T> {
     public var result: T?
     
     public var isSuccess: Bool {
-        return !hasFailed
+        return !self.hasFailed
     }
     
     public init(hasFailed: Bool, message: String?, result: T) {

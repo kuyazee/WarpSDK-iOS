@@ -14,13 +14,19 @@ open class WarpPointer<Attribute>: EVObject where Attribute: WarpModel {
     open var className: String = ""
     open var attributes: Attribute = Attribute()
     
+    open var objectValue: Attribute {
+        let object = self.attributes
+        object.id = self.id
+        return object
+    }
+    
     public required init(){
         super.init()
     }
     
     public init(model: Attribute) {
         super.init()
-        self.className = type(of: model).className()
+        self.className = type(of: model).objectClassName()
         self.id = model.id
         self.attributes = model
     }
