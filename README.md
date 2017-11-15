@@ -356,7 +356,9 @@ Constraints help filter the results of a specific query. In order to pass constr
 
 ```Swift
 // Prepare query
-let alienQuery = WarpQuery(className: "alien")
+let alienQuery = Warp.Query(className: "alien")
+// or
+let alienQuery = Warp.ObjectQuery(className: "alien")
 
 // Find an exact match for the specified key
 alienQuery.equalTo("The Doctor", forKey: "name")
@@ -441,7 +443,9 @@ User accounts are often an essential part of an application. In Warp, these are 
 Aside from id, createdAt and updatedAt, Warp User also has the following get methods:
 
 ```Swift
-let userQuery = WarpUser.query()
+let userQuery = Warp.UserQuery()
+// or
+let userQuery = Warp.User.Query()
 userQuery.equalTo(5, forKey: "id").first { (user, error) in
     if let unwrappedError = error {
         print(unwrappedError)
@@ -463,7 +467,7 @@ Note that for User Queries, instead of using `WarpQuery(className: "user")` we s
 In order to log in to a user account, you would use the `.login(username: String, password: String, completion: { (isSucess, error) in })` method:
 
 ```Swift
-WarpUser().login("username", password: "password") { (isSucess, error) in
+Warp.User().login("username", password: "password") { (isSucess, error) in
     if error != nil {
         // Successfully logged in
     } else {
@@ -486,7 +490,7 @@ var current = WarpUser.current()
 To register a new user account, you would use the `.signUp({ (isSucess, error) in })` method:
 
 ```Swift
-let user = WarpUser()
+let user = Warp.User()
 user.setUsername("Luke Smith")
 user.setPassword("k9_and_sara")
 
